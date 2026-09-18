@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contacto | ISEP N° 8232</title>
+  <link rel="icon" href="assets/logo_isep.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <div class="crumbs">Inicio / Contacto</div>
+        <h1>Estamos para acompañarte</h1>
+        <p>Escribinos, acercate a sede o iniciá tu preinscripción online.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="wrap split">
+        <article class="form-card">
+          <h2 style="color:var(--plum);margin-bottom:6px">Escribinos</h2>
+          <p style="color:var(--muted);margin-bottom:16px">El mensaje llega al correo institucional (<span id="mailDestino">casilla del instituto</span>).</p>
+          <div id="contactoAviso" class="hidden"></div>
+          <form id="contactoForm">
+            <div class="grid-2">
+              <div class="field"><label>Nombre y apellido</label><input name="nombre" required></div>
+              <div class="field"><label>Correo electrónico</label><input type="email" name="email" required></div>
+              <div class="field"><label>Teléfono / celular</label><input name="telefono"></div>
+              <div class="field">
+                <label>Motivo</label>
+                <select name="motivo">
+                  <option value="Consulta general">Consulta general</option>
+                  <option value="Preinscripción">Preinscripción</option>
+                  <option value="Licenciatura">Licenciatura en Educación Inicial</option>
+                  <option value="Documentación">Documentación</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label>Mensaje</label>
+                <textarea name="mensaje" rows="5" required placeholder="Contanos en qué podemos ayudarte"></textarea>
+              </div>
+            </div>
+            <button class="btn btn-orange" type="submit" style="margin-top:12px">Enviar mensaje</button>
+            <p id="leyendaContacto" style="display:none;margin-top:14px;padding:14px 16px;border-radius:12px;background:#e8f7f2;border:1px solid #b7e4d6;color:#14685c;font-weight:700">Formulario enviado.</p>
+          </form>
+        </article>
+        <aside class="info-side">
+          <h3 style="color:var(--plum);margin-bottom:12px">Sede Orán</h3>
+          <p>San Ramón de la Nueva Orán · Salta · Argentina</p>
+          <p>Instituto de gestión privada · ISEP N° 8232</p>
+          <div class="meta" style="margin-top:16px">
+            <div><span>Localidad</span><b>Orán</b></div>
+            <div><span>Provincia</span><b>Salta</b></div>
+            <div><span>Facebook</span><b><a href="https://www.facebook.com/Instituto8232" target="_blank" rel="noopener">Instituto8232</a></b></div>
+          </div>
+          <p style="margin-top:18px"><a class="btn btn-orange" href="inscripciones.html">Ficha de preinscripción</a></p>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/form.js"></script>
+</body>
+</html>

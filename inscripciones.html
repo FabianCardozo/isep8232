@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preinscripción | ISEP N° 8232</title>
+  <link rel="icon" href="assets/logo_isep.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <div class="crumbs">Inicio / Inscripciones</div>
+        <h1>Ficha de preinscripción</h1>
+        <p>Completá tus datos para quedar registrado como preinscripto. Luego presentá la documentación en sede para formalizar la inscripción.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="wrap" style="max-width:920px">
+        <div class="notice" style="margin-bottom:16px">
+          Esta ficha tiene carácter de <b>preinscripción</b>. Al enviarla, los datos llegan al correo institucional (<span id="mailDestino">casilla del instituto</span>) y queda una copia imprimible. No reemplaza la presentación del título (o constancia), certificado de salud, DNI y fotos 4x4.
+        </div>
+        <form class="form-card" id="fichaForm">
+          <div class="form-head">
+            <img src="assets/logo_isep.jpg" alt="ISEP">
+            <div class="form-title">
+              Instituto Superior de Educación Profesional
+              <small>Solicitud de inscripción al primer año / ciclo lectivo</small>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>Carrera y fecha</legend>
+            <div class="grid-2">
+              <div class="field">
+                <label for="carrera">Carrera</label>
+                <select id="carrera" name="carrera" required>
+                  <option value="">Seleccioná una carrera</option>
+                  <option value="inicial">Profesorado para la Educación Inicial (4 años)</option>
+                  <option value="primaria">Profesorado para la Educación Primaria (4 años)</option>
+                  <option value="terapeutico">Técnico Superior en Acompañante Terapéutico (3 años)</option>
+                  <option value="licenciatura">Licenciatura en Educación Inicial — CCC (2 años)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fecha">Fecha de la solicitud</label>
+                <input type="date" id="fecha" name="fecha" required>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Datos del / de la aspirante</legend>
+            <div class="grid-2">
+              <div class="field"><label>Apellidos</label><input name="apellidos" required></div>
+              <div class="field"><label>Nombres</label><input name="nombres" required></div>
+              <div class="field"><label>Edad</label><input name="edad" type="number" min="16" max="80"></div>
+              <div class="field">
+                <label>Estado civil</label>
+                <select name="estadoCivil">
+                  <option value="">Seleccionar</option>
+                  <option>Soltero/a</option>
+                  <option>Casado/a</option>
+                  <option>Unión convivencial</option>
+                  <option>Divorciado/a</option>
+                  <option>Viudo/a</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Sexo</label>
+                <select name="sexo">
+                  <option value="">Seleccionar</option>
+                  <option>Femenino</option>
+                  <option>Masculino</option>
+                  <option>X / Otro</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Tipo de documento</label>
+                <select name="tipoDoc" required>
+                  <option>DNI</option>
+                  <option>LC</option>
+                  <option>LE</option>
+                  <option>Pasaporte</option>
+                </select>
+              </div>
+              <div class="field"><label>N° de documento</label><input name="dni" required placeholder="Ej. 41340730"></div>
+              <div class="field"><label>CUIL</label><input name="cuil" placeholder="XX-XXXXXXXX-X"></div>
+              <div class="field"><label>Nacionalidad</label><input name="nacionalidad" value="Argentina" required></div>
+              <div class="field"><label>Lugar de nacimiento</label><input name="lugarNac"></div>
+              <div class="field"><label>Fecha de nacimiento</label><input type="date" name="fechaNac" required></div>
+              <div class="field">
+                <label>¿Trabaja?</label>
+                <select name="trabaja">
+                  <option value="">Seleccionar</option>
+                  <option>NO</option>
+                  <option>SI</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset id="bloqueSecundario">
+            <legend>Estudios secundarios</legend>
+            <div class="grid-2">
+              <div class="field full"><label>Título secundario</label><input name="tituloSec" placeholder="Ej. Bachiller en Ciencias Naturales"></div>
+              <div class="field"><label>Institución que lo expidió</label><input name="institucionSec"></div>
+              <div class="field"><label>Año de egreso</label><input name="anioEgreso" type="number" min="1970" max="2027"></div>
+            </div>
+          </fieldset>
+
+          <fieldset id="bloqueLicenciatura" class="hidden">
+            <legend>Título de base para la licenciatura</legend>
+            <div class="grid-2">
+              <div class="field full">
+                <label>Título de base</label>
+                <select name="tituloBase" data-req>
+                  <option value="">Seleccioná</option>
+                  <option>Profesor/a en Educación Inicial</option>
+                  <option>Profesor/a para la Educación Preprimaria</option>
+                  <option>Maestro/a de Educación Inicial</option>
+                </select>
+              </div>
+              <div class="field"><label>Institución que otorgó el título</label><input name="institucionTitulo" data-req></div>
+              <div class="field"><label>Duración de la carrera previa (años)</label><input name="duracionPrevia" type="number" min="3" max="6" data-req></div>
+              <div class="field"><label>Horas reloj del plan</label><input name="horasReloj" type="number" min="1500" placeholder="Mínimo 1500" data-req></div>
+              <div class="field full">
+                <label class="check"><input type="checkbox" name="tituloReconocido"> Declaro que el título y el plan están reconocidos oficialmente por el Ministerio de Educación de la Nación o de la jurisdicción.</label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Domicilio y contacto</legend>
+            <div class="grid-3">
+              <div class="field" style="grid-column:1 / 3"><label>Calle / Avenida</label><input name="calle" required></div>
+              <div class="field"><label>N°</label><input name="numero" required></div>
+              <div class="field"><label>Localidad</label><input name="localidad" value="San Ramón de la Nueva Orán" required></div>
+              <div class="field"><label>Provincia</label><input name="provincia" value="Salta" required></div>
+              <div class="field"><label>Teléfono</label><input name="telefono"></div>
+              <div class="field"><label>Celular</label><input name="celular" required placeholder="3878..."></div>
+              <div class="field full"><label>Correo electrónico</label><input type="email" name="email" required></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Documentación que acompañará la ficha</legend>
+            <div class="docs">
+              <label class="check"><input type="checkbox" name="docsTitulo"> Fotocopia autenticada del título o constancia de estudios en trámite / cumplido.</label>
+              <label class="check"><input type="checkbox" name="docsSalud"> Certificado de salud completo.</label>
+              <label class="check"><input type="checkbox" name="docsDni"> Fotocopia de DNI, ambas caras.</label>
+              <label class="check"><input type="checkbox" name="docsFotos"> Dos fotos 4 x 4.</label>
+            </div>
+          </fieldset>
+
+          <label class="check" style="margin:14px 0 18px">
+            <input type="checkbox" name="acepta" required>
+            Declaro que los datos consignados son verdaderos y acepto que esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en el instituto.
+          </label>
+
+          <button class="btn btn-orange" type="submit">Enviar preinscripción</button>
+          <p id="leyendaPreinscripcion" style="display:none;margin-top:14px;padding:14px 16px;border-radius:12px;background:#e8f7f2;border:1px solid #b7e4d6;color:#14685c;font-weight:700">Formulario enviado.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/form.js"></script>
+</body>
+</html>

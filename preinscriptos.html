@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preinscriptos | ISEP N° 8232</title>
+  <link rel="icon" href="assets/logo_isep.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <main>
+    <section class="page-hero">
+      <div class="wrap">
+        <div class="crumbs">Inicio / Inscripciones / Listado</div>
+        <h1>Listado de preinscriptos</h1>
+        <p>Registro local de este navegador. Exportá el CSV para trabajarlo en planilla.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="wrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap">
+          <p><b id="count">0</b> preinscripciones guardadas</p>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-orange" id="btnExport" type="button">Exportar CSV</button>
+            <a class="btn btn-outline" href="inscripciones.html">Nueva ficha</a>
+          </div>
+        </div>
+        <div style="overflow:auto;border-radius:14px;box-shadow:var(--shadow)">
+          <table class="data">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Fecha</th>
+                <th>Aspirante</th>
+                <th>DNI</th>
+                <th>Carrera</th>
+                <th>Contacto</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="adminBody"></tbody>
+          </table>
+        </div>
+        <p class="mini" style="text-align:left">Cada preinscripción también se envía al correo institucional. Este listado es la copia local de este navegador, útil para exportar un CSV.</p>
+      </div>
+    </section>
+  </main>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/form.js"></script>
+</body>
+</html>
