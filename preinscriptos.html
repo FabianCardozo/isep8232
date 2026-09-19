@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Preinscriptos | ISEP N° 8232</title>
+  <title>Acceso institucional | ISEP N° 8232</title>
   <link rel="icon" href="assets/logo_isep.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -12,42 +12,180 @@
   <main>
     <section class="page-hero">
       <div class="wrap">
-        <div class="crumbs">Inicio / Inscripciones / Listado</div>
-        <h1>Listado de preinscriptos</h1>
-        <p>Registro local de este navegador. Exportá el CSV para trabajarlo en planilla.</p>
+        <div class="crumbs">Área institucional</div>
+        <h1>Fichas de preinscripción</h1>
+        <p>Ingreso solo con el correo institucional y la contraseña del área interna.</p>
       </div>
     </section>
     <section class="section">
       <div class="wrap">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap">
-          <p><b id="count">0</b> preinscripciones guardadas</p>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-orange" id="btnExport" type="button">Exportar CSV</button>
-            <a class="btn btn-outline" href="inscripciones.html">Nueva ficha</a>
+        <div id="adminLogin" class="admin-lock">
+          <h2 style="color:var(--plum);margin-bottom:8px">Ingreso institucional</h2>
+          <p style="color:var(--muted);margin-bottom:14px">Correo: instituto8232@gmail.com</p>
+          <div class="field"><label>Correo institucional</label><input type="email" id="adminEmail" autocomplete="off" placeholder="instituto8232@gmail.com"></div>
+          <div class="field" style="margin-top:10px"><label>Contraseña</label><input type="password" id="adminPass" autocomplete="off"></div>
+          <button class="btn btn-orange" type="button" id="btnAdminLogin" style="margin-top:14px">Ingresar</button>
+          <p id="adminError" style="display:none;margin-top:12px;color:#9b1c1c"></p>
+        </div>
+
+        <div id="adminPanel" class="hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap">
+            <p><b id="count">0</b> fichas en este equipo</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-orange" id="btnExport" type="button">Exportar CSV</button>
+              <button class="btn btn-outline" id="btnAdminSalir" type="button">Salir</button>
+            </div>
           </div>
+
+          <div class="form-card" style="margin-bottom:18px">
+            <h3 style="color:var(--plum);margin-bottom:8px">Cambiar contraseña</h3>
+            <div class="grid-2">
+              <div class="field"><label>Nueva contraseña</label><input type="password" id="passNueva" autocomplete="off"></div>
+              <div class="field"><label>Repetir contraseña</label><input type="password" id="passRepite" autocomplete="off"></div>
+            </div>
+            <button class="btn btn-plum" type="button" id="btnCambiarPass" style="margin-top:12px">Guardar nueva contraseña</button>
+            <p id="passMsg" class="mini" style="margin-top:8px;text-align:left"></p>
+          </div>
+
+          <div style="overflow:auto;border-radius:14px;box-shadow:var(--shadow);margin-bottom:22px">
+            <table class="data">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Fecha</th>
+                  <th>Aspirante</th>
+                  <th>DNI</th>
+                  <th>Carrera</th>
+                  <th>Contacto</th>
+                </tr>
+              </thead>
+              <tbody id="adminBody"></tbody>
+            </table>
+          </div>
+          <h2 style="color:var(--plum);margin-bottom:12px">Todas las fichas</h2>
+          <div id="fichasTodas"></div>
         </div>
-        <div style="overflow:auto;border-radius:14px;box-shadow:var(--shadow)">
-          <table class="data">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Fecha</th>
-                <th>Aspirante</th>
-                <th>DNI</th>
-                <th>Carrera</th>
-                <th>Contacto</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="adminBody"></tbody>
-          </table>
-        </div>
-        <p class="mini" style="text-align:left">Cada preinscripción también se envía al correo institucional. Este listado es la copia local de este navegador, útil para exportar un CSV.</p>
       </div>
     </section>
   </main>
-  <script src="assets/js/config.js"></script>
   <script src="assets/js/site.js"></script>
-  <script src="assets/js/form.js"></script>
+  <script>
+  (function () {
+    var KEY = "isep_preinscriptos_v1";
+    var SESSION = "isep_admin_ok";
+    var PASS_KEY = "isep_admin_pass_v1";
+    var EMAIL_OK = "instituto8232@gmail.com";
+    var PASS_INICIAL = "ISEP-Oran-8232";
+
+    function passActual() {
+      return localStorage.getItem(PASS_KEY) || PASS_INICIAL;
+    }
+    function loadAll() {
+      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
+    }
+    function esc(v) {
+      return String(v == null || v === "" ? "—" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+    function docsTexto(d) {
+      var p = [];
+      if (d.docsTitulo) p.push("Título o constancia");
+      if (d.docsSalud) p.push("Certificado de salud");
+      if (d.docsDni) p.push("DNI ambas caras");
+      if (d.docsFotos) p.push("Dos fotos 4x4");
+      if (d.docsFolio) p.push("Un folio");
+      return p.length ? p.join(" · ") : "—";
+    }
+    function fichaHTML(d) {
+      return "<div class='ficha' style='margin-bottom:18px'>" +
+        "<div class='ficha-top'><img src='assets/logo_isep.jpg' alt='ISEP' width='56' height='56'>" +
+        "<div style='flex:1;text-align:center'><b>ISEP N° 8232</b><div>Solicitud de preinscripción</div></div>" +
+        "<div>" + esc(d.id) + "<br>" + esc(d.fecha) + "</div></div>" +
+        "<div class='ficha-row'><span>Carrera</span><b>" + esc(d.carreraNombre) + "</b></div>" +
+        "<div class='ficha-row'><span>Aspirante</span><b>" + esc(d.apellidos) + ", " + esc(d.nombres) + "</b></div>" +
+        "<div class='ficha-row'><span>Documento</span><b>" + esc((d.tipoDoc || "DNI") + " " + (d.dni || "")) + "</b></div>" +
+        "<div class='ficha-row'><span>Nacimiento</span><b>" + esc(d.lugarNac) + " · " + esc(d.fechaNac) + "</b></div>" +
+        "<div class='ficha-row'><span>Domicilio</span><b>" + esc([d.calle, d.numero, d.localidad, d.provincia].join(" ")) + "</b></div>" +
+        "<div class='ficha-row'><span>Contacto</span><b>" + esc(d.celular) + " · " + esc(d.email) + "</b></div>" +
+        "<div class='ficha-row'><span>Documentación</span><b>" + esc(docsTexto(d)) + "</b></div>" +
+        "</div>";
+    }
+
+    var loginBox = document.getElementById("adminLogin");
+    var panel = document.getElementById("adminPanel");
+    var err = document.getElementById("adminError");
+
+    function pintar() {
+      var rows = loadAll();
+      document.getElementById("count").textContent = rows.length;
+      var body = document.getElementById("adminBody");
+      var todas = document.getElementById("fichasTodas");
+      if (!rows.length) {
+        body.innerHTML = "<tr><td colspan='6'>Todavía no hay fichas generadas en esta computadora.</td></tr>";
+        todas.innerHTML = "";
+        return;
+      }
+      body.innerHTML = rows.map(function (r) {
+        return "<tr><td>" + esc(r.id) + "</td><td>" + esc(r.fecha) + "</td><td>" + esc(r.apellidos) + ", " + esc(r.nombres) +
+          "</td><td>" + esc(r.dni) + "</td><td>" + esc(r.carreraNombre) + "</td><td>" + esc(r.celular) + "<br>" + esc(r.email) + "</td></tr>";
+      }).join("");
+      todas.innerHTML = rows.map(fichaHTML).join("");
+    }
+    function abrir() {
+      loginBox.classList.add("hidden");
+      panel.classList.remove("hidden");
+      pintar();
+    }
+    function cerrar() {
+      sessionStorage.removeItem(SESSION);
+      panel.classList.add("hidden");
+      loginBox.classList.remove("hidden");
+    }
+
+    if (sessionStorage.getItem(SESSION) === "1") abrir();
+
+    document.getElementById("btnAdminLogin").onclick = function () {
+      var mail = (document.getElementById("adminEmail").value || "").trim().toLowerCase();
+      var pass = document.getElementById("adminPass").value || "";
+      if (mail !== EMAIL_OK) {
+        err.style.display = "block";
+        err.textContent = "El correo tiene que ser instituto8232@gmail.com";
+        return;
+      }
+      if (pass !== passActual()) {
+        err.style.display = "block";
+        err.textContent = "Contraseña incorrecta.";
+        return;
+      }
+      err.style.display = "none";
+      sessionStorage.setItem(SESSION, "1");
+      abrir();
+    };
+
+    document.getElementById("btnAdminSalir").onclick = cerrar;
+    document.getElementById("btnCambiarPass").onclick = function () {
+      var n = document.getElementById("passNueva").value || "";
+      var r = document.getElementById("passRepite").value || "";
+      var msg = document.getElementById("passMsg");
+      if (n.length < 6) { msg.textContent = "La nueva contraseña debe tener al menos 6 caracteres."; return; }
+      if (n !== r) { msg.textContent = "Las contraseñas no coinciden."; return; }
+      localStorage.setItem(PASS_KEY, n);
+      document.getElementById("passNueva").value = "";
+      document.getElementById("passRepite").value = "";
+      msg.textContent = "Contraseña actualizada. La próxima vez ingresá con la nueva.";
+    };
+    document.getElementById("btnExport").onclick = function () {
+      var rows = loadAll();
+      if (!rows.length) return alert("No hay fichas para exportar.");
+      var cols = ["id","fecha","apellidos","nombres","dni","carreraNombre","email","celular","localidad"];
+      var lines = [cols.join(";")].concat(rows.map(function (r) {
+        return cols.map(function (c) { return '"' + String(r[c] || "").replace(/"/g, "'") + '"'; }).join(";");
+      }));
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" }));
+      a.download = "preinscriptos-isep-8232.csv";
+      a.click();
+    };
+  })();
+  </script>
 </body>
 </html>

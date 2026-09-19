@@ -17,6 +17,7 @@
           <a href="inscripciones.html" data-page="inscripciones.html">Inscripciones</a>
           <a href="institucion.html" data-page="institucion.html">Institución</a>
           <a href="contacto.html" data-page="contacto.html">Contacto</a>
+          <a href="preinscriptos.html" data-page="preinscriptos.html">Personal</a>
         </nav>
         <a class="btn btn-orange" href="inscripciones.html">Quiero inscribirme</a>
       </div>
@@ -32,12 +33,13 @@
             <span>Instituto Superior de Educación Profesional</span>
           </div>
         </div>
-        <div>📍 San Ramón de la Nueva Orán · Salta · Argentina</div>
+        <div>📍 Hipólito Yrigoyen 686 (Escuela Técnica N° 3134)<br>San Ramón de la Nueva Orán · Salta</div>
+        <div>🕐 Lunes a viernes de 19:15 a 23:30 hs<br>✉️ instituto8232@gmail.com</div>
         <div>📘 <a href="https://www.facebook.com/Instituto8232" target="_blank" rel="noopener">facebook.com/Instituto8232</a></div>
-        <div>Instituto de gestión privada</div>
       </div>
       <p class="foot-note">Más educación para más oportunidades</p>
-      <p class="mini">Preinscripción online · Ciclo lectivo 2026 / 2027 · Los datos se registran como preinscriptos hasta completar la documentación.</p>
+      <p class="mini">Instituto de gestión privada · ISEP N° 8232 · Enviar fichas a instituto8232@gmail.com</p>
+      <p class="mini"><a href="preinscriptos.html">Área institucional — ver preinscriptos</a></p>
     </footer>`;
 
   document.body.insertAdjacentHTML("afterbegin", header);

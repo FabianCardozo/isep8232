@@ -14,15 +14,12 @@
       <div class="wrap">
         <div class="crumbs">Inicio / Inscripciones</div>
         <h1>Ficha de preinscripción</h1>
-        <p>Completá tus datos para quedar registrado como preinscripto. Luego presentá la documentación en sede para formalizar la inscripción.</p>
+        <p>Completá tus datos. Se genera la ficha en esta misma pantalla para enviarla al ISEP e imprimirla.</p>
       </div>
     </section>
     <section class="section">
       <div class="wrap" style="max-width:920px">
-        <div class="notice" style="margin-bottom:16px">
-          Esta ficha tiene carácter de <b>preinscripción</b>. Al enviarla, los datos llegan al correo institucional (<span id="mailDestino">casilla del instituto</span>) y queda una copia imprimible. No reemplaza la presentación del título (o constancia), certificado de salud, DNI y fotos 4x4.
-        </div>
-        <form class="form-card" id="fichaForm">
+        <form class="form-card" id="fichaForm" autocomplete="off" novalidate>
           <div class="form-head">
             <img src="assets/logo_isep.jpg" alt="ISEP">
             <div class="form-title">
@@ -45,8 +42,8 @@
                 </select>
               </div>
               <div class="field">
-                <label for="fecha">Fecha de la solicitud</label>
-                <input type="date" id="fecha" name="fecha" required>
+                <label for="fecha">Fecha de la solicitud (DD/MM/AAAA)</label>
+                <input type="text" id="fecha" name="fecha" required placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" autocomplete="off">
               </div>
             </div>
           </fieldset>
@@ -54,9 +51,13 @@
           <fieldset>
             <legend>Datos del / de la aspirante</legend>
             <div class="grid-2">
-              <div class="field"><label>Apellidos</label><input name="apellidos" required></div>
-              <div class="field"><label>Nombres</label><input name="nombres" required></div>
-              <div class="field"><label>Edad</label><input name="edad" type="number" min="16" max="80"></div>
+              <div class="field"><label>Apellidos</label><input type="text" name="apellidos" required autocomplete="off"></div>
+              <div class="field"><label>Nombres</label><input type="text" name="nombres" required autocomplete="off"></div>
+              <div class="field">
+                <label>Foto tipo 4x4</label>
+                <input type="file" id="foto4x4" name="foto4x4" accept="image/*">
+              </div>
+              <div class="field"><label>Edad</label><input name="edad" type="text" inputmode="numeric" autocomplete="off"></div>
               <div class="field">
                 <label>Estado civil</label>
                 <select name="estadoCivil">
@@ -79,18 +80,21 @@
               </div>
               <div class="field">
                 <label>Tipo de documento</label>
-                <select name="tipoDoc" required>
+                <select name="tipoDoc">
                   <option>DNI</option>
                   <option>LC</option>
                   <option>LE</option>
                   <option>Pasaporte</option>
                 </select>
               </div>
-              <div class="field"><label>N° de documento</label><input name="dni" required placeholder="Ej. 41340730"></div>
-              <div class="field"><label>CUIL</label><input name="cuil" placeholder="XX-XXXXXXXX-X"></div>
-              <div class="field"><label>Nacionalidad</label><input name="nacionalidad" value="Argentina" required></div>
-              <div class="field"><label>Lugar de nacimiento</label><input name="lugarNac"></div>
-              <div class="field"><label>Fecha de nacimiento</label><input type="date" name="fechaNac" required></div>
+              <div class="field"><label>N° de documento</label><input type="text" name="dni" required placeholder="Ej. 41340730" autocomplete="off"></div>
+              <div class="field"><label>CUIL</label><input type="text" name="cuil" placeholder="XX-XXXXXXXX-X" autocomplete="off"></div>
+              <div class="field"><label>Nacionalidad</label><input type="text" name="nacionalidad" value="Argentina" required autocomplete="off"></div>
+              <div class="field"><label>Lugar de nacimiento</label><input type="text" name="lugarNac" placeholder="Ej. Orán" autocomplete="off"></div>
+              <div class="field">
+                <label>Fecha de nacimiento (DD/MM/AAAA)</label>
+                <input type="text" name="fechaNac" required placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" autocomplete="off">
+              </div>
               <div class="field">
                 <label>¿Trabaja?</label>
                 <select name="trabaja">
@@ -105,9 +109,9 @@
           <fieldset id="bloqueSecundario">
             <legend>Estudios secundarios</legend>
             <div class="grid-2">
-              <div class="field full"><label>Título secundario</label><input name="tituloSec" placeholder="Ej. Bachiller en Ciencias Naturales"></div>
-              <div class="field"><label>Institución que lo expidió</label><input name="institucionSec"></div>
-              <div class="field"><label>Año de egreso</label><input name="anioEgreso" type="number" min="1970" max="2027"></div>
+              <div class="field full"><label>Título secundario</label><input type="text" name="tituloSec" autocomplete="off"></div>
+              <div class="field"><label>Institución que lo expidió</label><input type="text" name="institucionSec" autocomplete="off"></div>
+              <div class="field"><label>Año de egreso</label><input type="text" name="anioEgreso" inputmode="numeric" autocomplete="off"></div>
             </div>
           </fieldset>
 
@@ -116,18 +120,18 @@
             <div class="grid-2">
               <div class="field full">
                 <label>Título de base</label>
-                <select name="tituloBase" data-req>
+                <select name="tituloBase">
                   <option value="">Seleccioná</option>
                   <option>Profesor/a en Educación Inicial</option>
                   <option>Profesor/a para la Educación Preprimaria</option>
                   <option>Maestro/a de Educación Inicial</option>
                 </select>
               </div>
-              <div class="field"><label>Institución que otorgó el título</label><input name="institucionTitulo" data-req></div>
-              <div class="field"><label>Duración de la carrera previa (años)</label><input name="duracionPrevia" type="number" min="3" max="6" data-req></div>
-              <div class="field"><label>Horas reloj del plan</label><input name="horasReloj" type="number" min="1500" placeholder="Mínimo 1500" data-req></div>
+              <div class="field"><label>Institución que otorgó el título</label><input type="text" name="institucionTitulo" autocomplete="off"></div>
+              <div class="field"><label>Duración de la carrera previa (años)</label><input type="text" name="duracionPrevia" autocomplete="off"></div>
+              <div class="field"><label>Horas reloj del plan</label><input type="text" name="horasReloj" placeholder="Mínimo 1500" autocomplete="off"></div>
               <div class="field full">
-                <label class="check"><input type="checkbox" name="tituloReconocido"> Declaro que el título y el plan están reconocidos oficialmente por el Ministerio de Educación de la Nación o de la jurisdicción.</label>
+                <label class="check"><input type="checkbox" name="tituloReconocido"> Declaro que el título y el plan están reconocidos oficialmente por el Ministerio de Educación.</label>
               </div>
             </div>
           </fieldset>
@@ -135,13 +139,13 @@
           <fieldset>
             <legend>Domicilio y contacto</legend>
             <div class="grid-3">
-              <div class="field" style="grid-column:1 / 3"><label>Calle / Avenida</label><input name="calle" required></div>
-              <div class="field"><label>N°</label><input name="numero" required></div>
-              <div class="field"><label>Localidad</label><input name="localidad" value="San Ramón de la Nueva Orán" required></div>
-              <div class="field"><label>Provincia</label><input name="provincia" value="Salta" required></div>
-              <div class="field"><label>Teléfono</label><input name="telefono"></div>
-              <div class="field"><label>Celular</label><input name="celular" required placeholder="3878..."></div>
-              <div class="field full"><label>Correo electrónico</label><input type="email" name="email" required></div>
+              <div class="field" style="grid-column:1 / 3"><label>Calle / Avenida</label><input type="text" name="calle" required autocomplete="off"></div>
+              <div class="field"><label>N°</label><input type="text" name="numero" required autocomplete="off"></div>
+              <div class="field"><label>Localidad</label><input type="text" name="localidad" value="San Ramón de la Nueva Orán" required autocomplete="off"></div>
+              <div class="field"><label>Provincia</label><input type="text" name="provincia" value="Salta" required autocomplete="off"></div>
+              <div class="field"><label>Teléfono</label><input type="text" name="telefono" autocomplete="off"></div>
+              <div class="field"><label>Celular</label><input type="text" name="celular" required autocomplete="off"></div>
+              <div class="field full"><label>Correo electrónico</label><input type="text" name="email" required autocomplete="off"></div>
             </div>
           </fieldset>
 
@@ -152,22 +156,200 @@
               <label class="check"><input type="checkbox" name="docsSalud"> Certificado de salud completo.</label>
               <label class="check"><input type="checkbox" name="docsDni"> Fotocopia de DNI, ambas caras.</label>
               <label class="check"><input type="checkbox" name="docsFotos"> Dos fotos 4 x 4.</label>
+              <label class="check"><input type="checkbox" name="docsFolio"> Un folio.</label>
             </div>
           </fieldset>
 
           <label class="check" style="margin:14px 0 18px">
             <input type="checkbox" name="acepta" required>
-            Declaro que los datos consignados son verdaderos y acepto que esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en el instituto.
+            Declaro que los datos consignados son verdaderos y acepto que esta solicitud tiene carácter de preinscripción.
           </label>
 
-          <button class="btn btn-orange" type="submit">Enviar preinscripción</button>
-          <p id="leyendaPreinscripcion" style="display:none;margin-top:14px;padding:14px 16px;border-radius:12px;background:#e8f7f2;border:1px solid #b7e4d6;color:#14685c;font-weight:700">Formulario enviado.</p>
+          <button class="btn btn-orange" type="submit" id="btnGenerar">Generar ficha</button>
         </form>
+
+        <div id="resultadoFicha" class="hidden" style="margin-top:22px">
+          <div class="ok no-print">
+            Ficha generada: enviala ahora desde tu correo personal al mail del ISEP: <b>instituto8232@gmail.com</b>, luego imprimila porque la debés presentar, junto con toda la documentación exigida, en el momento en que confirmes tu inscripción durante el período lectivo 2027.
+          </div>
+          <div id="fichaView"></div>
+          <div class="no-print" style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+            <button class="btn btn-orange" type="button" id="btnImprimir">Imprimir ficha en A4</button>
+            <button class="btn btn-outline" type="button" id="btnNueva">Nueva preinscripción</button>
+          </div>
+        </div>
       </div>
     </section>
   </main>
-  <script src="assets/js/config.js"></script>
   <script src="assets/js/site.js"></script>
-  <script src="assets/js/form.js"></script>
+  <script>
+  (function () {
+    var KEY = "isep_preinscriptos_v1";
+    var MAIL = "instituto8232@gmail.com";
+    var CARRERAS = {
+      inicial: "Profesorado para la Educación Inicial (4 años)",
+      primaria: "Profesorado para la Educación Primaria (4 años)",
+      terapeutico: "Técnico Superior en Acompañante Terapéutico (3 años)",
+      licenciatura: "Licenciatura en Educación Inicial — Ciclo de Complementación Curricular (2 años)"
+    };
+    var PREFIJOS = {
+      inicial: "ISEP-EDIN27",
+      primaria: "ISEP-EDPRI27",
+      terapeutico: "ISEP-ACTE27",
+      licenciatura: "ISEP-LICEDIN27"
+    };
+
+    function hoy() {
+      var d = new Date();
+      return pad(d.getDate()) + "/" + pad(d.getMonth() + 1) + "/" + d.getFullYear();
+    }
+    function pad(n) { return String(n).padStart(2, "0"); }
+    function esc(v) {
+      return String(v == null || v === "" ? "—" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+    function loadAll() {
+      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
+    }
+    function saveAll(rows) { localStorage.setItem(KEY, JSON.stringify(rows)); }
+    function siguienteCodigo(carrera) {
+      var prefijo = PREFIJOS[carrera] || "ISEP-GEN27";
+      var max = 0;
+      loadAll().forEach(function (r) {
+        if (r.id && r.id.indexOf(prefijo + "-") === 0) {
+          var n = parseInt(r.id.split("-").pop(), 10);
+          if (n > max) max = n;
+        }
+      });
+      var num = String(max + 1);
+      while (num.length < 3) num = "0" + num;
+      return prefijo + "-" + num;
+    }
+    function leerFoto(cb) {
+      var input = document.getElementById("foto4x4");
+      if (!input || !input.files || !input.files[0]) { cb(""); return; }
+      var file = input.files[0];
+      var reader = new FileReader();
+      reader.onload = function () { cb(reader.result || ""); };
+      reader.onerror = function () { cb(""); };
+      reader.readAsDataURL(file);
+    }
+
+    function mascaraFecha(input) {
+      input.addEventListener("input", function () {
+        var v = input.value.replace(/\D/g, "").slice(0, 8);
+        if (v.length >= 5) input.value = v.slice(0, 2) + "/" + v.slice(2, 4) + "/" + v.slice(4);
+        else if (v.length >= 3) input.value = v.slice(0, 2) + "/" + v.slice(2);
+        else input.value = v;
+      });
+    }
+
+    function docsTexto(d) {
+      var p = [];
+      if (d.docsTitulo) p.push("Título o constancia");
+      if (d.docsSalud) p.push("Certificado de salud");
+      if (d.docsDni) p.push("DNI ambas caras");
+      if (d.docsFotos) p.push("Dos fotos 4x4");
+      if (d.docsFolio) p.push("Un folio");
+      return p.length ? p.join(" · ") : "—";
+    }
+
+    function fichaHTML(d) {
+      var filas = [
+        ["Carrera", d.carreraNombre],
+        ["Fecha de la solicitud", d.fecha],
+        ["Apellidos", d.apellidos],
+        ["Nombres", d.nombres],
+        ["Edad", d.edad],
+        ["Estado civil", d.estadoCivil],
+        ["Sexo", d.sexo],
+        ["Documento", (d.tipoDoc || "DNI") + " " + (d.dni || "")],
+        ["CUIL", d.cuil],
+        ["Nacionalidad", d.nacionalidad],
+        ["Lugar de nacimiento", d.lugarNac],
+        ["Fecha de nacimiento", d.fechaNac],
+        ["¿Trabaja?", d.trabaja]
+      ];
+      if (d.carrera === "licenciatura") {
+        filas.push(["Título de base", d.tituloBase], ["Institución que otorgó el título", d.institucionTitulo], ["Duración previa", d.duracionPrevia], ["Horas reloj", d.horasReloj]);
+      } else {
+        filas.push(["Título secundario", d.tituloSec], ["Institución que lo expidió", d.institucionSec], ["Año de egreso", d.anioEgreso]);
+      }
+      filas.push(["Calle / Avenida", d.calle], ["N°", d.numero], ["Localidad", d.localidad], ["Provincia", d.provincia], ["Teléfono", d.telefono], ["Celular", d.celular], ["Correo electrónico", d.email], ["Documentación que acompañará", docsTexto(d)]);
+      var cuerpo = filas.map(function (f) {
+        return "<div class='ficha-row'><span>" + esc(f[0]) + "</span><b>" + esc(f[1]) + "</b></div>";
+      }).join("");
+      var foto = d.foto
+        ? "<img class='foto-4x4' src='" + d.foto + "' alt='Foto 4x4'>"
+        : "<div class='foto-4x4'></div>";
+      return "<div class='ficha' id='printable'>" +
+        "<div class='ficha-top'>" +
+        "<div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div>" +
+        "<div style='flex:1;text-align:center'><div style='font-size:.75rem;letter-spacing:.12em'>INSTITUTO SUPERIOR DE EDUCACIÓN PROFESIONAL</div>" +
+        "<h2>Solicitud de preinscripción</h2><div>ISEP N° 8232 · Hipólito Yrigoyen 686 (Escuela Técnica N° 3134)<br>San Ramón de la Nueva Orán · Lunes a viernes 19:15 a 23:30 hs<br>instituto8232@gmail.com</div></div>" +
+        "<img src='assets/logo_isep.jpg' alt='ISEP' width='72' height='72'></div>" +
+        cuerpo +
+        "<p style='margin-top:16px;font-size:.82rem'>Declaro que los datos consignados son verdaderos. Esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en sede.</p>" +
+        "<div class='ficha-firmas'><div class='firma-linea'>Firma del / de la aspirante<br>Aclaración: " + esc(d.nombres) + " " + esc(d.apellidos) + "<br>DNI: " + esc(d.dni) + "</div><div class='firma-linea'>Aclaración y DNI</div></div>" +
+        "<div class='ficha-recibido'><strong>RECIBIDO — uso institucional</strong>Fecha de recepción (DD/MM/AAAA): ____ / ____ / ________ &nbsp;&nbsp; Firma y sello del instituto: ______________________________</div>" +
+        "</div>";
+    }
+
+    var form = document.getElementById("fichaForm");
+    var fecha = document.getElementById("fecha");
+    var fechaNac = form.querySelector("[name=fechaNac]");
+    var sel = document.getElementById("carrera");
+    fecha.value = hoy();
+    mascaraFecha(fecha);
+    mascaraFecha(fechaNac);
+    sel.addEventListener("change", function () {
+      var lic = sel.value === "licenciatura";
+      document.getElementById("bloqueLicenciatura").classList.toggle("hidden", !lic);
+      document.getElementById("bloqueSecundario").classList.toggle("hidden", lic);
+    });
+
+    var ultima = null;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var obligatorios = ["carrera", "fecha", "apellidos", "nombres", "dni", "nacionalidad", "fechaNac", "calle", "numero", "localidad", "provincia", "celular", "email"];
+      for (var i = 0; i < obligatorios.length; i++) {
+        var el = form.elements[obligatorios[i]];
+        if (!el || !String(el.value || "").trim()) {
+          alert("Completá el campo: " + obligatorios[i]);
+          if (el) el.focus();
+          return;
+        }
+      }
+      if (!form.acepta.checked) {
+        alert("Tenés que aceptar la declaración jurada.");
+        return;
+      }
+      var data = {};
+      var fd = new FormData(form);
+      fd.forEach(function (v, k) { if (k !== "foto4x4") data[k] = v; });
+      data.id = siguienteCodigo(data.carrera);
+      data.estado = "Preinscripto";
+      data.carreraNombre = CARRERAS[data.carrera] || data.carrera;
+      data.docsTitulo = form.docsTitulo.checked;
+      data.docsSalud = form.docsSalud.checked;
+      data.docsDni = form.docsDni.checked;
+      data.docsFotos = form.docsFotos.checked;
+      data.docsFolio = form.docsFolio.checked;
+      leerFoto(function (foto) {
+        data.foto = foto;
+        var all = loadAll();
+        all.unshift(data);
+        saveAll(all);
+        ultima = data;
+        document.getElementById("fichaView").innerHTML = fichaHTML(data);
+        document.getElementById("resultadoFicha").classList.remove("hidden");
+        form.classList.add("hidden");
+        document.getElementById("resultadoFicha").scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    document.getElementById("btnImprimir").onclick = function () { window.print(); };
+    document.getElementById("btnNueva").onclick = function () { location.reload(); };
+  })();
+  </script>
 </body>
 </html>

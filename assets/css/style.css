@@ -268,10 +268,21 @@ input:focus, select:focus, textarea:focus {
 .ficha {
   border: 2px solid #1f3b36; background: #fff; padding: 22px; border-radius: 6px;
 }
-.ficha-top { display: flex; justify-content: space-between; gap: 16px; border-bottom: 2px solid #1f3b36; padding-bottom: 10px; }
+.ficha-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 2px solid #1f3b36; padding-bottom: 10px; }
+.ficha-izq { width: 130px; flex-shrink: 0; text-align: left; font-size: .78rem; line-height: 1.3; }
+.ficha-izq b { display: block; font-size: .8rem; }
+.foto-4x4 {
+  width: 28mm; height: 28mm; object-fit: cover; object-position: center top;
+  border: 1px solid #333; margin-top: 8px; background: #f3f3f3; display: block;
+}
 .ficha h2 { font-size: 1rem; letter-spacing: .04em; text-align: center; }
-.ficha-row { display: grid; grid-template-columns: 160px 1fr; gap: 8px; border-bottom: 1px dotted #999; padding: 6px 0; font-size: .92rem; }
+.ficha-row { display: grid; grid-template-columns: 200px 1fr; gap: 8px; border-bottom: 1px dotted #999; padding: 6px 0; font-size: .92rem; }
 .ficha-row b { color: #333; }
+.ficha-firmas { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 40px; }
+.firma-linea { border-top: 1px solid #333; padding-top: 8px; min-height: 86px; font-size: .85rem; }
+.ficha-recibido { margin-top: 28px; border: 1px dashed #333; padding: 12px 14px; font-size: .88rem; }
+.ficha-recibido strong { display: block; margin-bottom: 10px; }
+.admin-lock { max-width: 420px; margin: 0 auto; background: #fff; padding: 24px; border-radius: 18px; box-shadow: var(--shadow); }
 
 table.data { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
 table.data th, table.data td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; font-size: .9rem; }
@@ -349,8 +360,31 @@ table.data th { background: var(--plum); color: #fff; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
 }
 
+@page {
+  size: A4 portrait;
+  margin: 12mm;
+}
 @media print {
-  .topbar, .footer, .no-print, .page-hero { display: none !important; }
-  body { background: #fff; }
-  .ficha { box-shadow: none; }
+  html, body {
+    width: 210mm;
+    background: #fff !important;
+    color: #000;
+  }
+  .topbar, .footer, .no-print, .page-hero, .notice, .hero, .hamburger, .menu {
+    display: none !important;
+  }
+  main, .section, .wrap {
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .ficha {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: 186mm;
+    max-width: 186mm;
+    min-height: auto;
+    page-break-inside: avoid;
+  }
 }
