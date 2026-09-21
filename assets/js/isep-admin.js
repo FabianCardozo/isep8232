@@ -44,7 +44,7 @@
         "<h2>Solicitud de preinscripción</h2><div>ISEP N° 8232 · Hipólito Yrigoyen 686 (Escuela Técnica N° 3134)<br>San Ramón de la Nueva Orán · Lunes a viernes 19:15 a 23:30 hs<br>instituto8232@gmail.com</div></div>" +
         "<div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div></div>" +
         cuerpo +
-        "<p style='margin-top:16px;font-size:.82rem'>Declaro que los datos consignados son verdaderos. Esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en sede.</p>" +
+        "<p style='margin-top:16px;font-size:.82rem'>Declaro que los datos consignados son verdaderos. Esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en sede. Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com.</p>" +
         "<div class='ficha-firmas'><div class='firma-linea'>Firma del / de la aspirante<br>Aclaración: " + esc(d.nombres) + " " + esc(d.apellidos) + "<br>DNI: " + esc(d.dni) + "</div><div class='firma-linea'>Aclaración y DNI</div></div>" +
         "<div class='ficha-recibido'><strong>RECIBIDO — uso institucional</strong>Fecha de recepción (DD/MM/AAAA): ____ / ____ / ________ &nbsp;&nbsp; Firma y sello del instituto: ______________________________</div>" +
         "</div>";
