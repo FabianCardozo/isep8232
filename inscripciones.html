@@ -68,7 +68,7 @@
               <div class="field"><label>Nombres</label><input type="text" name="nombres" maxlength="150" required autocomplete="off"></div>
               <div class="field">
                 <label>Foto tipo 4x4</label>
-                <input type="file" id="foto4x4" name="foto4x4" accept="image/*">
+                <input type="file" id="foto4x4" name="foto4x4" accept="image/jpeg,image/png,image/webp">
               </div>
               <div class="field"><label>Edad</label><input name="edad" type="text" inputmode="numeric" autocomplete="off"></div>
               <div class="field">
@@ -188,9 +188,7 @@
         </form>
 
         <div id="resultadoFicha" class="hidden" style="margin-top:22px">
-          <div class="ok no-print">
-            Ficha generada en carácter de declaración jurada. Envíala ahora desde tu correo personal a <b>instituto8232@gmail.com</b> e imprimila para presentarla de forma física, junto con la documentación requerida, en el ISEP N° 8232 en la fecha que se informará oportunamente.
-          </div>
+          <div class="ok no-print"><b>Preinscripción recibida por el ISEP.</b> Guardá tu ficha en PDF e imprimila para presentarla junto con la documentación requerida, en la fecha que informe el instituto. Conservá el código de tu solicitud.</div>
           <div id="fichaView"></div>
           <div class="no-print" style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
             <button class="btn btn-orange" type="button" id="btnImprimir">Descargar ficha en PDF</button>
@@ -247,10 +245,6 @@
     function esc(v) {
       return String(v == null || v === "" ? "—" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
-    function loadAll() {
-      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
-    }
-    function saveAll(rows) { localStorage.setItem(KEY, JSON.stringify(rows)); }
     function siguienteCodigo(carrera) { return (PREFIJOS[carrera]||'ISEP27')+'-'+submissionId; }
     function soloNum(el, max) {
       el.addEventListener("input", function () {
