@@ -10,7 +10,7 @@
             <span>Instituto Superior de<br>Educación Profesional</span>
           </div>
         </a>
-        <button class="hamburger" id="menuBtn" aria-label="Abrir menú">☰</button>
+        <button class="hamburger" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">☰</button>
         <nav class="menu" id="menu">
           <a href="index.html" data-page="index.html">Inicio</a>
           <a href="carreras.html" data-page="carreras.html">Carreras</a>
@@ -56,5 +56,6 @@
 
   const btn = document.getElementById("menuBtn");
   const menu = document.getElementById("menu");
-  btn.addEventListener("click", () => menu.classList.toggle("open"));
+  btn.addEventListener('click',()=>{btn.setAttribute('aria-expanded',String(menu.classList.toggle('open')));});
+document.querySelectorAll('.field').forEach((field,i)=>{const label=field.querySelector('label'),inputs=field.querySelectorAll('input,select,textarea');inputs.forEach((input,j)=>{if(!input.id)input.id='campo-'+i+'-'+j;if(label&&inputs.length===1)label.htmlFor=input.id;else if(label)input.setAttribute('aria-label',label.textContent+' '+(input.placeholder||input.id));});});
 })();
