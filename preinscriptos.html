@@ -13,29 +13,80 @@
     <section class="page-hero">
       <div class="wrap">
         <div class="crumbs">Área institucional</div>
-        <h1>Fichas de preinscripción</h1>
-        <p>Ingreso solo con el correo institucional y la contraseña del área interna.</p>
+        <h1>Listado de preinscriptos</h1>
+        <p>Ingreso con el correo institucional.</p>
       </div>
     </section>
     <section class="section">
       <div class="wrap">
         <div id="adminLogin" class="admin-lock">
           <h2 style="color:var(--plum);margin-bottom:8px">Ingreso institucional</h2>
-          <p style="color:var(--muted);margin-bottom:14px">Correo: instituto8232@gmail.com</p>
           <div class="field"><label>Correo institucional</label><input type="email" id="adminEmail" autocomplete="off" placeholder="instituto8232@gmail.com"></div>
           <div class="field" style="margin-top:10px"><label>Contraseña</label><input type="password" id="adminPass" autocomplete="off"></div>
           <button class="btn btn-orange" type="button" id="btnAdminLogin" style="margin-top:14px">Ingresar</button>
+          <p style="margin-top:12px"><button class="btn btn-outline" type="button" id="btnOlvide" style="width:100%">Olvidé mi contraseña</button></p>
           <p id="adminError" style="display:none;margin-top:12px;color:#9b1c1c"></p>
+        </div>
+
+        <div id="cajaRecupero" class="admin-lock hidden">
+          <h2 style="color:var(--plum);margin-bottom:8px">Recuperar contraseña</h2>
+          <p style="color:var(--muted);margin-bottom:12px">Escribí el correo de recuperación.</p>
+          <div class="field"><label>Correo de recuperación</label><input type="email" id="mailRecupero" autocomplete="off"></div>
+          <div id="nuevaPassBox" class="hidden" style="margin-top:10px">
+            <div class="field"><label>Nueva contraseña</label><input type="password" id="recNueva" autocomplete="off"></div>
+            <div class="field" style="margin-top:10px"><label>Repetir contraseña</label><input type="password" id="recRepite" autocomplete="off"></div>
+          </div>
+          <button class="btn btn-orange" type="button" id="btnRecupero" style="margin-top:14px">Continuar</button>
+          <p style="margin-top:10px"><button class="btn btn-outline" type="button" id="btnVolverLogin">Volver al ingreso</button></p>
+          <p id="recMsg" style="margin-top:12px;color:#14685c"></p>
         </div>
 
         <div id="adminPanel" class="hidden">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap">
-            <p><b id="count">0</b> fichas en este equipo</p>
+            <p><b id="count">0</b> preinscriptos</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button class="btn btn-orange" id="btnExport" type="button">Exportar CSV</button>
               <button class="btn btn-outline" id="btnAdminSalir" type="button">Salir</button>
             </div>
           </div>
+
+          <div id="cajaCambioPass" class="form-card hidden" style="margin-bottom:18px">
+            <h3 style="color:var(--plum);margin-bottom:8px">Cambiá la contraseña ahora</h3>
+            <p style="color:var(--muted);margin-bottom:10px">Esta pantalla aparece una sola vez. Después ya no se muestra.</p>
+            <div class="grid-2">
+              <div class="field"><label>Nueva contraseña</label><input type="password" id="passNueva" autocomplete="off"></div>
+              <div class="field"><label>Repetir contraseña</label><input type="password" id="passRepite" autocomplete="off"></div>
+            </div>
+            <button class="btn btn-plum" type="button" id="btnCambiarPass" style="margin-top:12px">Guardar y no mostrar más</button>
+            <p id="passMsg" class="mini" style="margin-top:8px;text-align:left"></p>
+          </div>
+
+          <div class="form-card no-print" style="margin-bottom:18px">
+            <p style="margin-bottom:10px">Tildá una o más fichas y después elegí una acción:</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-orange" type="button" id="btnDescargarSel">Descargar ficha</button>
+              <button class="btn btn-plum" type="button" id="btnEditarSel">Editar ficha</button>
+              <button class="btn btn-outline" type="button" id="btnEliminarSel">Eliminar ficha</button>
+            </div>
+          </div>
+
+          <div id="cajaEditar" class="form-card hidden" style="margin-bottom:18px">
+            <h3 style="color:var(--plum);margin-bottom:10px">Editar ficha</h3>
+            <input type="hidden" id="editId">
+            <div class="grid-2">
+              <div class="field"><label>Apellidos</label><input id="editApellidos" type="text"></div>
+              <div class="field"><label>Nombres</label><input id="editNombres" type="text"></div>
+              <div class="field"><label>DNI</label><input id="editDni" type="text"></div>
+              <div class="field"><label>Celular</label><input id="editCelular" type="text"></div>
+              <div class="field"><label>Correo</label><input id="editEmail" type="text"></div>
+              <div class="field"><label>Localidad</label><input id="editLocalidad" type="text"></div>
+              <div class="field"><label>Fecha solicitud</label><input id="editFecha" type="text" placeholder="DD/MM/AAAA"></div>
+              <div class="field"><label>Fecha nacimiento</label><input id="editFechaNac" type="text" placeholder="DD/MM/AAAA"></div>
+            </div>
+            <button class="btn btn-orange" type="button" id="btnGuardarEdit" style="margin-top:12px">Guardar lo editado</button>
+            <button class="btn btn-outline" type="button" id="btnCancelarEdit" style="margin-top:12px">Cancelar</button>
+          </div>
+
           <div id="listadoCarreras"></div>
         </div>
       </div>
@@ -47,7 +98,9 @@
     var KEY = "isep_preinscriptos_v1";
     var SESSION = "isep_admin_ok";
     var PASS_KEY = "isep_admin_pass_v1";
+    var CHANGED_KEY = "isep_pass_changed_v1";
     var EMAIL_OK = "instituto8232@gmail.com";
+    var MAIL_RECUPERO = "renefabiancardozo@gmail.com";
     var PASS_INICIAL = "ISEP8232";
     var GRUPOS = [
       { key: "inicial", titulo: "Profesorado en Educación Inicial" },
@@ -55,11 +108,13 @@
       { key: "terapeutico", titulo: "Acompañante Terapéutico" },
       { key: "licenciatura", titulo: "Licenciatura en Educación Inicial" }
     ];
-    try { localStorage.removeItem(PASS_KEY); } catch (e) {}
-    function passActual() { return PASS_INICIAL; }
+
+    function passActual() { return localStorage.getItem(PASS_KEY) || PASS_INICIAL; }
+    function yaCambio() { return localStorage.getItem(CHANGED_KEY) === "1"; }
     function loadAll() {
       try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
     }
+    function saveAll(rows) { localStorage.setItem(KEY, JSON.stringify(rows)); }
     function esc(v) {
       return String(v == null || v === "" ? "—" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
     }
@@ -75,8 +130,8 @@
     function fichaHTML(d) {
       var foto = d.foto ? "<img class='foto-4x4' src='" + d.foto + "' alt='Foto 4x4'>" : "<div class='foto-4x4'></div>";
       var extra = d.carrera === "licenciatura"
-        ? "<div class='ficha-row'><span>Título de base</span><b>" + esc(d.tituloBase) + "</b></div><div class='ficha-row'><span>Institución</span><b>" + esc(d.institucionTitulo) + "</b></div>"
-        : "<div class='ficha-row'><span>Título secundario</span><b>" + esc(d.tituloSec) + "</b></div><div class='ficha-row'><span>Institución</span><b>" + esc(d.institucionSec) + "</b></div>";
+        ? "<div class='ficha-row'><span>Título de base</span><b>" + esc(d.tituloBase) + "</b></div>"
+        : "<div class='ficha-row'><span>Título secundario</span><b>" + esc(d.tituloSec) + "</b></div>";
       return "<div class='ficha'>" +
         "<div class='ficha-top'><div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div>" +
         "<div style='flex:1;text-align:center'><div style='font-size:.75rem'>INSTITUTO SUPERIOR DE EDUCACIÓN PROFESIONAL</div>" +
@@ -91,13 +146,13 @@
         "<div class='ficha-row'><span>Domicilio</span><b>" + esc([d.calle, d.numero, d.localidad, d.provincia].join(" ")) + "</b></div>" +
         "<div class='ficha-row'><span>Contacto</span><b>" + esc(d.celular) + " · " + esc(d.email) + "</b></div>" +
         "<div class='ficha-row'><span>Documentación</span><b>" + esc(docsTexto(d)) + "</b></div>" +
-        "<div class='ficha-firmas'><div class='firma-linea'>Firma del / de la aspirante<br>" + esc(d.nombres) + " " + esc(d.apellidos) + " · DNI " + esc(d.dni) + "</div><div class='firma-linea'>Aclaración y DNI</div></div>" +
-        "<div class='ficha-recibido'><strong>RECIBIDO — uso institucional</strong>Fecha de recepción (DD/MM/AAAA): ____ / ____ / ________</div>" +
+        "<div class='ficha-firmas'><div class='firma-linea'>Firma del / de la aspirante</div><div class='firma-linea'>Aclaración y DNI</div></div>" +
+        "<div class='ficha-recibido'><strong>RECIBIDO</strong>Fecha de recepción (DD/MM/AAAA): ____ / ____ / ________</div>" +
         "</div>";
     }
     function descargarFicha(d) {
       var html = "<!DOCTYPE html><html lang='es-AR'><head><meta charset='UTF-8'><title>" + esc(d.id) + "</title>" +
-        "<style>@page{size:A4 portrait;margin:12mm}body{font-family:Arial,sans-serif;color:#222;padding:8mm}.ficha{border:2px solid #1f3b36;padding:16px}.ficha-top{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #1f3b36;padding-bottom:8px}.ficha-izq{width:120px;font-size:12px}.foto-4x4{width:28mm;height:28mm;object-fit:cover;border:1px solid #333;margin-top:8px;display:block}.ficha-row{display:grid;grid-template-columns:200px 1fr;border-bottom:1px dotted #999;padding:5px 0;font-size:14px}.ficha-firmas{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px}.firma-linea{border-top:1px solid #333;padding-top:8px;min-height:70px;font-size:13px}.ficha-recibido{margin-top:20px;border:1px dashed #333;padding:10px}</style></head><body>" +
+        "<style>@page{size:A4 portrait;margin:12mm}body{font-family:Arial,sans-serif;padding:8mm}.ficha{border:2px solid #1f3b36;padding:16px}.ficha-top{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #1f3b36;padding-bottom:8px}.ficha-izq{width:120px;font-size:12px}.foto-4x4{width:28mm;height:28mm;object-fit:cover;border:1px solid #333;margin-top:8px;display:block}.ficha-row{display:grid;grid-template-columns:200px 1fr;border-bottom:1px dotted #999;padding:5px 0;font-size:14px}.ficha-firmas{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px}.firma-linea{border-top:1px solid #333;padding-top:8px;min-height:70px}.ficha-recibido{margin-top:20px;border:1px dashed #333;padding:10px}</style></head><body>" +
         fichaHTML(d) + "</body></html>";
       var a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
@@ -106,37 +161,51 @@
       a.click();
       a.remove();
     }
+    function seleccionadas() {
+      var ids = [];
+      document.querySelectorAll(".chk-ficha:checked").forEach(function (c) { ids.push(c.value); });
+      var rows = loadAll();
+      return rows.filter(function (r) { return ids.indexOf(r.id) !== -1; });
+    }
 
     var loginBox = document.getElementById("adminLogin");
     var panel = document.getElementById("adminPanel");
+    var recBox = document.getElementById("cajaRecupero");
     var err = document.getElementById("adminError");
-    window.ISEP_DESCARGAR = descargarFicha;
 
     function pintar() {
       var rows = loadAll();
       document.getElementById("count").textContent = rows.length;
       var box = document.getElementById("listadoCarreras");
-      if (!rows.length) {
-        box.innerHTML = "<p>Todavía no hay fichas generadas en esta computadora.</p>";
-        return;
-      }
-      window.ISEP_ROWS = rows;
       box.innerHTML = GRUPOS.map(function (g) {
         var lista = rows.filter(function (r) { return r.carrera === g.key; });
-        var cuerpo = lista.length ? lista.map(function (r, idx) {
-          var i = rows.indexOf(r);
-          return "<tr><td>" + esc(r.id) + "</td><td>" + esc(r.fecha) + "</td><td>" + esc(r.apellidos) + ", " + esc(r.nombres) +
-            "</td><td>" + esc(r.dni) + "</td><td>" + esc(r.celular) + "<br>" + esc(r.email) +
-            "</td><td><button class='btn btn-orange' type='button' onclick='ISEP_DESCARGAR(ISEP_ROWS[" + i + "])'>Descargar ficha</button></td></tr>";
+        var cuerpo = lista.length ? lista.map(function (r) {
+          return "<tr><td><input type='checkbox' class='chk-ficha' value='" + esc(r.id) + "'></td><td>" + esc(r.id) +
+            "</td><td>" + esc(r.fecha) + "</td><td>" + esc(r.apellidos) + ", " + esc(r.nombres) +
+            "</td><td>" + esc(r.dni) + "</td><td>" + esc(r.celular) + "<br>" + esc(r.email) + "</td></tr>";
         }).join("") : "<tr><td colspan='6'>No hay preinscriptos en esta oferta.</td></tr>";
-        return "<section style='margin-bottom:28px'><h2 style='color:var(--plum);margin-bottom:8px'>" + g.titulo + " <small style='color:#6a6570'>(" + lista.length + ")</small></h2>" +
-          "<div style='overflow:auto;border-radius:14px;box-shadow:var(--shadow)'><table class='data'><thead><tr><th>Código</th><th>Fecha</th><th>Aspirante</th><th>DNI</th><th>Contacto</th><th></th></tr></thead><tbody>" +
+        return "<section style='margin-bottom:28px'><h2 style='color:var(--plum);margin-bottom:8px'>" + g.titulo +
+          " <small style='color:#6a6570'>(" + lista.length + ")</small></h2>" +
+          "<div style='overflow:auto;border-radius:14px;box-shadow:var(--shadow)'><table class='data'><thead><tr><th></th><th>Código</th><th>Fecha</th><th>Aspirante</th><th>DNI</th><th>Contacto</th></tr></thead><tbody>" +
           cuerpo + "</tbody></table></div></section>";
       }).join("");
     }
-    function abrir() { loginBox.classList.add("hidden"); panel.classList.remove("hidden"); pintar(); }
-    function cerrar() { sessionStorage.removeItem(SESSION); panel.classList.add("hidden"); loginBox.classList.remove("hidden"); }
+    function abrir() {
+      loginBox.classList.add("hidden");
+      recBox.classList.add("hidden");
+      panel.classList.remove("hidden");
+      document.getElementById("cajaCambioPass").classList.toggle("hidden", yaCambio());
+      pintar();
+    }
+    function cerrar() {
+      sessionStorage.removeItem(SESSION);
+      panel.classList.add("hidden");
+      recBox.classList.add("hidden");
+      loginBox.classList.remove("hidden");
+    }
+
     if (sessionStorage.getItem(SESSION) === "1") abrir();
+
     document.getElementById("btnAdminLogin").onclick = function () {
       var mail = (document.getElementById("adminEmail").value || "").trim().toLowerCase();
       var pass = document.getElementById("adminPass").value || "";
@@ -147,6 +216,101 @@
       abrir();
     };
     document.getElementById("btnAdminSalir").onclick = cerrar;
+    document.getElementById("btnOlvide").onclick = function () {
+      loginBox.classList.add("hidden");
+      recBox.classList.remove("hidden");
+      document.getElementById("nuevaPassBox").classList.add("hidden");
+      document.getElementById("recMsg").textContent = "";
+    };
+    document.getElementById("btnVolverLogin").onclick = function () {
+      recBox.classList.add("hidden");
+      loginBox.classList.remove("hidden");
+    };
+    document.getElementById("btnRecupero").onclick = function () {
+      var mail = (document.getElementById("mailRecupero").value || "").trim().toLowerCase();
+      var box = document.getElementById("nuevaPassBox");
+      var msg = document.getElementById("recMsg");
+      if (mail !== MAIL_RECUPERO) {
+        msg.style.color = "#9b1c1c";
+        msg.textContent = "Ese correo no está habilitado para recuperar la clave.";
+        return;
+      }
+      if (box.classList.contains("hidden")) {
+        box.classList.remove("hidden");
+        msg.style.color = "#14685c";
+        msg.textContent = "Correo correcto. Escribí la nueva contraseña.";
+        return;
+      }
+      var n = document.getElementById("recNueva").value || "";
+      var r = document.getElementById("recRepite").value || "";
+      if (n.length < 6) { msg.style.color = "#9b1c1c"; msg.textContent = "La contraseña debe tener al menos 6 caracteres."; return; }
+      if (n !== r) { msg.style.color = "#9b1c1c"; msg.textContent = "Las contraseñas no coinciden."; return; }
+      localStorage.setItem(PASS_KEY, n);
+      localStorage.setItem(CHANGED_KEY, "1");
+      msg.style.color = "#14685c";
+      msg.textContent = "Contraseña nueva guardada. Volvé al ingreso.";
+    };
+    document.getElementById("btnCambiarPass").onclick = function () {
+      var n = document.getElementById("passNueva").value || "";
+      var r = document.getElementById("passRepite").value || "";
+      var msg = document.getElementById("passMsg");
+      if (n.length < 6) { msg.textContent = "Mínimo 6 caracteres."; return; }
+      if (n !== r) { msg.textContent = "Las contraseñas no coinciden."; return; }
+      localStorage.setItem(PASS_KEY, n);
+      localStorage.setItem(CHANGED_KEY, "1");
+      document.getElementById("cajaCambioPass").classList.add("hidden");
+    };
+    document.getElementById("btnDescargarSel").onclick = function () {
+      var sel = seleccionadas();
+      if (!sel.length) return alert("Tildá al menos una ficha.");
+      sel.forEach(descargarFicha);
+    };
+    document.getElementById("btnEliminarSel").onclick = function () {
+      var sel = seleccionadas();
+      if (!sel.length) return alert("Tildá al menos una ficha.");
+      if (!confirm("¿Eliminar las fichas seleccionadas?")) return;
+      var ids = sel.map(function (r) { return r.id; });
+      saveAll(loadAll().filter(function (r) { return ids.indexOf(r.id) === -1; }));
+      document.getElementById("cajaEditar").classList.add("hidden");
+      pintar();
+    };
+    document.getElementById("btnEditarSel").onclick = function () {
+      var sel = seleccionadas();
+      if (sel.length !== 1) return alert("Tildá una sola ficha para editar.");
+      var r = sel[0];
+      document.getElementById("editId").value = r.id;
+      document.getElementById("editApellidos").value = r.apellidos || "";
+      document.getElementById("editNombres").value = r.nombres || "";
+      document.getElementById("editDni").value = r.dni || "";
+      document.getElementById("editCelular").value = r.celular || "";
+      document.getElementById("editEmail").value = r.email || "";
+      document.getElementById("editLocalidad").value = r.localidad || "";
+      document.getElementById("editFecha").value = r.fecha || "";
+      document.getElementById("editFechaNac").value = r.fechaNac || "";
+      document.getElementById("cajaEditar").classList.remove("hidden");
+      document.getElementById("cajaEditar").scrollIntoView({ behavior: "smooth" });
+    };
+    document.getElementById("btnCancelarEdit").onclick = function () {
+      document.getElementById("cajaEditar").classList.add("hidden");
+    };
+    document.getElementById("btnGuardarEdit").onclick = function () {
+      var id = document.getElementById("editId").value;
+      var rows = loadAll();
+      var i;
+      for (i = 0; i < rows.length; i++) if (rows[i].id === id) break;
+      if (i === rows.length) return alert("No se encontró la ficha.");
+      rows[i].apellidos = document.getElementById("editApellidos").value;
+      rows[i].nombres = document.getElementById("editNombres").value;
+      rows[i].dni = document.getElementById("editDni").value;
+      rows[i].celular = document.getElementById("editCelular").value;
+      rows[i].email = document.getElementById("editEmail").value;
+      rows[i].localidad = document.getElementById("editLocalidad").value;
+      rows[i].fecha = document.getElementById("editFecha").value;
+      rows[i].fechaNac = document.getElementById("editFechaNac").value;
+      saveAll(rows);
+      document.getElementById("cajaEditar").classList.add("hidden");
+      pintar();
+    };
     document.getElementById("btnExport").onclick = function () {
       var rows = loadAll();
       if (!rows.length) return alert("No hay fichas para exportar.");
