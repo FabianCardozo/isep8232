@@ -1,0 +1,1 @@
+window.ISEP_CLOUD = Object.freeze({url:'https://aqtvleclssrrwnrjqbpr.supabase.co',key:'sb_publishable_pNZN1MT29H8GF-OMgO78xg_j9Y5ipP2'});
