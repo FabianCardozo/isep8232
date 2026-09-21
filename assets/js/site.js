@@ -37,7 +37,7 @@
         <div>📘 <a href="https://www.facebook.com/Instituto8232" target="_blank" rel="noopener">facebook.com/Instituto8232</a></div>
       </div>
       <p class="foot-note">Más educación para más oportunidades</p>
-      <p class="mini">Instituto de gestión privada · ISEP N° 8232 · Enviar fichas a instituto8232@gmail.com</p>
+      <p class="mini">Instituto de gestión privada · ISEP N° 8232 · <a href="institucion.html">Institución</a> · Enviar fichas a instituto8232@gmail.com</p>
     </footer>`;
 
   document.body.insertAdjacentHTML("afterbegin", header);

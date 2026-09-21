@@ -133,10 +133,10 @@
         ? "<div class='ficha-row'><span>Título de base</span><b>" + esc(d.tituloBase) + "</b></div>"
         : "<div class='ficha-row'><span>Título secundario</span><b>" + esc(d.tituloSec) + "</b></div>";
       return "<div class='ficha'>" +
-        "<div class='ficha-top'><div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div>" +
+        "<div class='ficha-top'><img src='assets/logo_isep.jpg' alt='ISEP' width='64' height='64'>" +
         "<div style='flex:1;text-align:center'><div style='font-size:.75rem'>INSTITUTO SUPERIOR DE EDUCACIÓN PROFESIONAL</div>" +
         "<h2>Solicitud de preinscripción</h2><div>ISEP N° 8232 · Hipólito Yrigoyen 686<br>instituto8232@gmail.com</div></div>" +
-        "<img src='assets/logo_isep.jpg' alt='ISEP' width='64' height='64'></div>" +
+        "<div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div></div>" +
         "<div class='ficha-row'><span>Carrera</span><b>" + esc(d.carreraNombre) + "</b></div>" +
         "<div class='ficha-row'><span>Apellidos</span><b>" + esc(d.apellidos) + "</b></div>" +
         "<div class='ficha-row'><span>Nombres</span><b>" + esc(d.nombres) + "</b></div>" +

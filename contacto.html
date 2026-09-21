@@ -14,16 +14,19 @@
       <div class="wrap">
         <div class="crumbs">Inicio / Contacto</div>
         <h1>Estamos para acompañarte</h1>
-        <p>Escribinos, acercate a sede o iniciá tu preinscripción online.</p>
+        <p>El mensaje se envía al correo institucional instituto8232@gmail.com.</p>
       </div>
     </section>
     <section class="section">
       <div class="wrap split">
         <article class="form-card">
           <h2 style="color:var(--plum);margin-bottom:6px">Escribinos</h2>
-          <p style="color:var(--muted);margin-bottom:16px">Escribí tu consulta, descargá el mensaje y envialo a <b id="mailDestino">instituto8232@gmail.com</b>.</p>
-          <div id="contactoAviso" class="hidden"></div>
-          <form id="contactoForm" autocomplete="off" novalidate>
+          <p style="color:var(--muted);margin-bottom:16px">Tu consulta llega a <b>instituto8232@gmail.com</b>.</p>
+          <form id="contactoForm" action="https://formsubmit.co/instituto8232@gmail.com" method="POST" autocomplete="off">
+            <input type="hidden" name="_subject" value="Consulta ISEP N° 8232">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="box">
+            <input type="hidden" name="_next" value="https://fabiancardozo.github.io/isep8232/contacto.html">
             <div class="grid-2">
               <div class="field"><label>Nombre y apellido</label><input type="text" name="nombre" required autocomplete="off"></div>
               <div class="field"><label>Correo electrónico</label><input type="email" name="email" required autocomplete="off"></div>
@@ -42,8 +45,8 @@
                 <textarea name="mensaje" rows="5" required placeholder="Contanos en qué podemos ayudarte"></textarea>
               </div>
             </div>
-            <button class="btn btn-orange" type="submit" style="margin-top:12px">Descargar consulta</button>
-            <p id="leyendaContacto" style="display:none;margin-top:14px;padding:14px 16px;border-radius:12px;background:#e8f7f2;border:1px solid #b7e4d6;color:#14685c;font-weight:700">Consulta lista. Envíala a instituto8232@gmail.com.</p>
+            <button class="btn btn-orange" type="submit" id="btnContacto" style="margin-top:12px">Enviar al correo del instituto</button>
+            <p id="leyendaContacto" style="display:none;margin-top:14px;padding:14px 16px;border-radius:12px;background:#e8f7f2;border:1px solid #b7e4d6;color:#14685c;font-weight:700">Mensaje enviado a instituto8232@gmail.com.</p>
           </form>
         </article>
         <aside class="info-side">
@@ -73,19 +76,23 @@
         alert("Completá nombre, correo y mensaje.");
         return;
       }
-      var texto = "CONSULTA ISEP N° 8232\nEnviar a: instituto8232@gmail.com\n\nNombre: " + fd.get("nombre") + "\nEmail: " + fd.get("email") + "\nTeléfono: " + (fd.get("telefono") || "-") + "\nMotivo: " + (fd.get("motivo") || "-") + "\n\n" + fd.get("mensaje") + "\n";
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([texto], { type: "text/plain;charset=utf-8" }));
-      a.download = "consulta-isep-8232.txt";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
       var ley = document.getElementById("leyendaContacto");
-      if (ley) {
-        ley.style.display = "block";
-        ley.textContent = "Se descargó tu consulta. Envíala a instituto8232@gmail.com";
-      }
-      alert("Se descargó el archivo de la consulta. Envíalo a instituto8232@gmail.com");
+      var btn = document.getElementById("btnContacto");
+      btn.disabled = true;
+      fetch("https://formsubmit.co/ajax/instituto8232@gmail.com", {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: fd
+      }).then(function (r) { return r.json(); }).then(function () {
+        if (ley) {
+          ley.style.display = "block";
+          ley.textContent = "Mensaje enviado a instituto8232@gmail.com.";
+        }
+        form.reset();
+        btn.disabled = false;
+      }).catch(function () {
+        form.submit();
+      });
     });
   })();
   </script>

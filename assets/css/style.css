@@ -328,10 +328,11 @@ table.data th { background: var(--plum); color: #fff; }
 }
 .auth-card {
   background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow);
-  display: grid; grid-template-columns: 168px 1fr; min-height: 210px;
+  display: grid; grid-template-columns: 180px 1fr; min-height: 210px; align-items: stretch;
 }
 .auth-card img {
-  width: 100%; height: 100%; object-fit: cover; object-position: center top;
+  width: 180px; height: 220px; max-width: 100%; object-fit: cover; object-position: center top;
+  display: block;
 }
 .auth-card div { padding: 18px 18px 16px; }
 .auth-card small {

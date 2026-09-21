@@ -14,11 +14,18 @@
       <div class="wrap">
         <div class="crumbs">Inicio / Inscripciones</div>
         <h1>Ficha de preinscripción</h1>
-        <p>Completá tus datos. Se genera la ficha en esta misma pantalla para enviarla al ISEP e imprimirla.</p>
+        <p>Leé estas indicaciones y después completá el formulario.</p>
       </div>
     </section>
     <section class="section">
       <div class="wrap" style="max-width:920px">
+        <div class="notice" style="margin-bottom:18px">
+          <b>Importante — carácter de declaración jurada</b><br>
+          El o la estudiante / aspirante debe rellenar este formulario en carácter de <b>declaración jurada</b>.
+          Después debe <b>enviarlo al correo institucional instituto8232@gmail.com</b>
+          e <b>imprimir la ficha</b> para presentarla de forma física, junto con la documentación requerida,
+          en el ISEP N° 8232 en la fecha que se informará oportunamente.
+        </div>
         <form class="form-card" id="fichaForm" autocomplete="off" novalidate>
           <div class="form-head">
             <img src="assets/logo_isep.jpg" alt="ISEP">
@@ -174,7 +181,7 @@
 
           <label class="check" style="margin:14px 0 18px">
             <input type="checkbox" name="acepta" required>
-            Declaro que los datos consignados son verdaderos y acepto que esta solicitud tiene carácter de preinscripción.
+            Declaro bajo juramento que los datos consignados son verdaderos. Acepto enviar esta ficha a instituto8232@gmail.com e imprimirla para presentarla en el ISEP N° 8232, con la documentación requerida, en la fecha que se informe oportunamente.
           </label>
 
           <button class="btn btn-orange" type="button" id="btnGenerar">Generar ficha</button>
@@ -182,17 +189,19 @@
 
         <div id="resultadoFicha" class="hidden" style="margin-top:22px">
           <div class="ok no-print">
-            Ficha generada: enviala ahora desde tu correo personal al mail del ISEP: <b>instituto8232@gmail.com</b>, luego imprimila porque la debés presentar, junto con toda la documentación exigida, en el momento en que confirmes tu inscripción durante el período lectivo 2027.
+            Ficha generada en carácter de declaración jurada. Envíala ahora desde tu correo personal a <b>instituto8232@gmail.com</b> e imprimila para presentarla de forma física, junto con la documentación requerida, en el ISEP N° 8232 en la fecha que se informará oportunamente.
           </div>
           <div id="fichaView"></div>
           <div class="no-print" style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
-            <button class="btn btn-orange" type="button" id="btnImprimir">Imprimir ficha en A4</button>
+            <button class="btn btn-orange" type="button" id="btnImprimir">Descargar ficha en PDF</button>
             <button class="btn btn-outline" type="button" id="btnNueva">Nueva preinscripción</button>
           </div>
         </div>
       </div>
     </section>
   </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="assets/js/site.js"></script>
   <script>
   (function () {
@@ -299,10 +308,10 @@
       var foto = d.foto ? "<img class='foto-4x4' src='" + d.foto + "' alt='Foto 4x4'>" : "<div class='foto-4x4'></div>";
       return "<div class='ficha' id='printable'>" +
         "<div class='ficha-top'>" +
-        "<div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div>" +
+        "<img src='assets/logo_isep.jpg' alt='ISEP' width='72' height='72'>" +
         "<div style='flex:1;text-align:center'><div style='font-size:.75rem;letter-spacing:.12em'>INSTITUTO SUPERIOR DE EDUCACIÓN PROFESIONAL</div>" +
         "<h2>Solicitud de preinscripción</h2><div>ISEP N° 8232 · Hipólito Yrigoyen 686 (Escuela Técnica N° 3134)<br>San Ramón de la Nueva Orán · Lunes a viernes 19:15 a 23:30 hs<br>instituto8232@gmail.com</div></div>" +
-        "<img src='assets/logo_isep.jpg' alt='ISEP' width='72' height='72'></div>" +
+        "<div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div></div>" +
         cuerpo +
         "<p style='margin-top:16px;font-size:.82rem'>Declaro que los datos consignados son verdaderos. Esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en sede.</p>" +
         "<div class='ficha-firmas'><div class='firma-linea'>Firma del / de la aspirante<br>Aclaración: " + esc(d.nombres) + " " + esc(d.apellidos) + "<br>DNI: " + esc(d.dni) + "</div><div class='firma-linea'>Aclaración y DNI</div></div>" +
@@ -386,6 +395,7 @@
           } catch (err) {
             alert("La ficha se generó, pero no se pudo guardar en este equipo.");
           }
+          window.ISEP_ULTIMA = data;
           document.getElementById("fichaView").innerHTML = fichaHTML(data);
           document.getElementById("resultadoFicha").classList.remove("hidden");
           form.classList.add("hidden");
@@ -398,7 +408,27 @@
 
     document.getElementById("btnGenerar").addEventListener("click", generar);
     form.addEventListener("submit", function (e) { e.preventDefault(); generar(); });
-    document.getElementById("btnImprimir").onclick = function () { window.print(); };
+    document.getElementById("btnImprimir").onclick = function () {
+      var el = document.getElementById("printable");
+      if (!el) return alert("Primero generá la ficha.");
+      if (!window.html2canvas || !window.jspdf) {
+        window.print();
+        return;
+      }
+      window.html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(function (canvas) {
+        var img = canvas.toDataURL("image/jpeg", 0.92);
+        var pdf = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+        var w = 210;
+        var h = canvas.height * w / canvas.width;
+        if (h > 297) {
+          w = 210 * 297 / h;
+          h = 297;
+        }
+        pdf.addImage(img, "JPEG", (210 - w) / 2, 8, w, Math.min(h, 281));
+        var nombre = (window.ISEP_ULTIMA && window.ISEP_ULTIMA.id) ? window.ISEP_ULTIMA.id : "ficha-isep";
+        pdf.save(nombre + ".pdf");
+      }).catch(function () { window.print(); });
+    };
     document.getElementById("btnNueva").onclick = function () { location.reload(); };
   })();
   </script>
