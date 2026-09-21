@@ -256,6 +256,9 @@ input:focus, select:focus, textarea:focus {
   outline: 2px solid rgba(29,138,122,.28); border-color: var(--teal);
 }
 .check { display: flex; align-items: flex-start; gap: 8px; font-size: .9rem; margin: 8px 0; }
+.fecha-3 { display: flex; align-items: center; gap: 6px; }
+.fecha-3 input { width: 64px; text-align: center; }
+.fecha-3 input:last-child { width: 84px; }
 .docs { display: grid; gap: 8px; background: #f7f3ee; border-radius: 12px; padding: 12px; }
 .hidden { display: none !important; }
 .ok {

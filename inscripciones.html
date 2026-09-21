@@ -42,8 +42,14 @@
                 </select>
               </div>
               <div class="field">
-                <label for="fecha">Fecha de la solicitud (DD/MM/AAAA)</label>
-                <input type="text" id="fecha" name="fecha" required placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" autocomplete="off">
+                <label>Fecha de la solicitud</label>
+                <div class="fecha-3">
+                  <input type="text" id="solD" maxlength="2" placeholder="DD" inputmode="numeric" autocomplete="off">
+                  <span>/</span>
+                  <input type="text" id="solM" maxlength="2" placeholder="MM" inputmode="numeric" autocomplete="off">
+                  <span>/</span>
+                  <input type="text" id="solA" maxlength="4" placeholder="AAAA" inputmode="numeric" autocomplete="off">
+                </div>
               </div>
             </div>
           </fieldset>
@@ -92,8 +98,14 @@
               <div class="field"><label>Nacionalidad</label><input type="text" name="nacionalidad" value="Argentina" required autocomplete="off"></div>
               <div class="field"><label>Lugar de nacimiento</label><input type="text" name="lugarNac" placeholder="Ej. Orán" autocomplete="off"></div>
               <div class="field">
-                <label>Fecha de nacimiento (DD/MM/AAAA)</label>
-                <input type="text" name="fechaNac" required placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" autocomplete="off">
+                <label>Fecha de nacimiento</label>
+                <div class="fecha-3">
+                  <input type="text" id="nacD" maxlength="2" placeholder="DD" inputmode="numeric" autocomplete="off">
+                  <span>/</span>
+                  <input type="text" id="nacM" maxlength="2" placeholder="MM" inputmode="numeric" autocomplete="off">
+                  <span>/</span>
+                  <input type="text" id="nacA" maxlength="4" placeholder="AAAA" inputmode="numeric" autocomplete="off">
+                </div>
               </div>
               <div class="field">
                 <label>¿Trabaja?</label>
@@ -165,7 +177,7 @@
             Declaro que los datos consignados son verdaderos y acepto que esta solicitud tiene carácter de preinscripción.
           </label>
 
-          <button class="btn btn-orange" type="submit" id="btnGenerar">Generar ficha</button>
+          <button class="btn btn-orange" type="button" id="btnGenerar">Generar ficha</button>
         </form>
 
         <div id="resultadoFicha" class="hidden" style="margin-top:22px">
@@ -185,7 +197,6 @@
   <script>
   (function () {
     var KEY = "isep_preinscriptos_v1";
-    var MAIL = "instituto8232@gmail.com";
     var CARRERAS = {
       inicial: "Profesorado para la Educación Inicial (4 años)",
       primaria: "Profesorado para la Educación Primaria (4 años)",
@@ -198,14 +209,31 @@
       terapeutico: "ISEP-ACTE27",
       licenciatura: "ISEP-LICEDIN27"
     };
+    var GRUPOS = [
+      { key: "inicial", titulo: "Profesorado en Educación Inicial" },
+      { key: "primaria", titulo: "Profesorado en Educación Primaria" },
+      { key: "terapeutico", titulo: "Acompañante Terapéutico" },
+      { key: "licenciatura", titulo: "Licenciatura en Educación Inicial" }
+    ];
 
-    function hoy() {
-      var d = new Date();
-      return pad(d.getDate()) + "/" + pad(d.getMonth() + 1) + "/" + d.getFullYear();
+    function pad(n, len) {
+      var s = String(n == null ? "" : n);
+      while (s.length < (len || 2)) s = "0" + s;
+      return s;
     }
-    function pad(n) { return String(n).padStart(2, "0"); }
+    function hoyPartes() {
+      var d = new Date();
+      return { d: pad(d.getDate()), m: pad(d.getMonth() + 1), a: String(d.getFullYear()) };
+    }
+    function armarFecha(d, m, a) {
+      d = String(d || "").replace(/\D/g, "");
+      m = String(m || "").replace(/\D/g, "");
+      a = String(a || "").replace(/\D/g, "");
+      if (!d || !m || !a) return "";
+      return pad(d) + "/" + pad(m) + "/" + a;
+    }
     function esc(v) {
-      return String(v == null || v === "" ? "—" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      return String(v == null || v === "" ? "—" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
     function loadAll() {
       try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
@@ -215,34 +243,25 @@
       var prefijo = PREFIJOS[carrera] || "ISEP-GEN27";
       var max = 0;
       loadAll().forEach(function (r) {
-        if (r.id && r.id.indexOf(prefijo + "-") === 0) {
-          var n = parseInt(r.id.split("-").pop(), 10);
+        if (r.id && String(r.id).indexOf(prefijo + "-") === 0) {
+          var n = parseInt(String(r.id).split("-").pop(), 10);
           if (n > max) max = n;
         }
       });
-      var num = String(max + 1);
-      while (num.length < 3) num = "0" + num;
-      return prefijo + "-" + num;
+      return prefijo + "-" + pad(max + 1, 3);
     }
-    function leerFoto(cb) {
-      var input = document.getElementById("foto4x4");
-      if (!input || !input.files || !input.files[0]) { cb(""); return; }
-      var file = input.files[0];
-      var reader = new FileReader();
-      reader.onload = function () { cb(reader.result || ""); };
-      reader.onerror = function () { cb(""); };
-      reader.readAsDataURL(file);
-    }
-
-    function mascaraFecha(input) {
-      input.addEventListener("input", function () {
-        var v = input.value.replace(/\D/g, "").slice(0, 8);
-        if (v.length >= 5) input.value = v.slice(0, 2) + "/" + v.slice(2, 4) + "/" + v.slice(4);
-        else if (v.length >= 3) input.value = v.slice(0, 2) + "/" + v.slice(2);
-        else input.value = v;
+    function soloNum(el, max) {
+      el.addEventListener("input", function () {
+        el.value = String(el.value || "").replace(/\D/g, "").slice(0, max);
+        if (el.value.length >= max) {
+          var next = el.parentNode.querySelector("input#" + (
+            el.id === "solD" ? "solM" : el.id === "solM" ? "solA" :
+            el.id === "nacD" ? "nacM" : el.id === "nacM" ? "nacA" : ""
+          ));
+          if (next) next.focus();
+        }
       });
     }
-
     function docsTexto(d) {
       var p = [];
       if (d.docsTitulo) p.push("Título o constancia");
@@ -252,7 +271,6 @@
       if (d.docsFolio) p.push("Un folio");
       return p.length ? p.join(" · ") : "—";
     }
-
     function fichaHTML(d) {
       var filas = [
         ["Carrera", d.carreraNombre],
@@ -278,9 +296,7 @@
       var cuerpo = filas.map(function (f) {
         return "<div class='ficha-row'><span>" + esc(f[0]) + "</span><b>" + esc(f[1]) + "</b></div>";
       }).join("");
-      var foto = d.foto
-        ? "<img class='foto-4x4' src='" + d.foto + "' alt='Foto 4x4'>"
-        : "<div class='foto-4x4'></div>";
+      var foto = d.foto ? "<img class='foto-4x4' src='" + d.foto + "' alt='Foto 4x4'>" : "<div class='foto-4x4'></div>";
       return "<div class='ficha' id='printable'>" +
         "<div class='ficha-top'>" +
         "<div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div>" +
@@ -293,60 +309,95 @@
         "<div class='ficha-recibido'><strong>RECIBIDO — uso institucional</strong>Fecha de recepción (DD/MM/AAAA): ____ / ____ / ________ &nbsp;&nbsp; Firma y sello del instituto: ______________________________</div>" +
         "</div>";
     }
+    function leerFoto(cb) {
+      var input = document.getElementById("foto4x4");
+      if (!input || !input.files || !input.files[0]) { cb(""); return; }
+      var url = URL.createObjectURL(input.files[0]);
+      var img = new Image();
+      img.onload = function () {
+        try {
+          var c = document.createElement("canvas");
+          c.width = 300; c.height = 300;
+          var ctx = c.getContext("2d");
+          var s = Math.min(img.width, img.height);
+          var sx = (img.width - s) / 2;
+          var sy = (img.height - s) / 2;
+          ctx.drawImage(img, sx, sy, s, s, 0, 0, 300, 300);
+          cb(c.toDataURL("image/jpeg", 0.72));
+        } catch (err) { cb(""); }
+        URL.revokeObjectURL(url);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); cb(""); };
+      img.src = url;
+    }
 
     var form = document.getElementById("fichaForm");
-    var fecha = document.getElementById("fecha");
-    var fechaNac = form.querySelector("[name=fechaNac]");
     var sel = document.getElementById("carrera");
-    fecha.value = hoy();
-    mascaraFecha(fecha);
-    mascaraFecha(fechaNac);
+    var hoy = hoyPartes();
+    document.getElementById("solD").value = hoy.d;
+    document.getElementById("solM").value = hoy.m;
+    document.getElementById("solA").value = hoy.a;
+    ["solD","nacD"].forEach(function (id) { soloNum(document.getElementById(id), 2); });
+    ["solM","nacM"].forEach(function (id) { soloNum(document.getElementById(id), 2); });
+    ["solA","nacA"].forEach(function (id) { soloNum(document.getElementById(id), 4); });
     sel.addEventListener("change", function () {
       var lic = sel.value === "licenciatura";
       document.getElementById("bloqueLicenciatura").classList.toggle("hidden", !lic);
       document.getElementById("bloqueSecundario").classList.toggle("hidden", lic);
     });
 
-    var ultima = null;
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var obligatorios = ["carrera", "fecha", "apellidos", "nombres", "dni", "nacionalidad", "fechaNac", "calle", "numero", "localidad", "provincia", "celular", "email"];
-      for (var i = 0; i < obligatorios.length; i++) {
-        var el = form.elements[obligatorios[i]];
-        if (!el || !String(el.value || "").trim()) {
-          alert("Completá el campo: " + obligatorios[i]);
-          if (el) el.focus();
-          return;
+    function generar() {
+      try {
+        var fecha = armarFecha(document.getElementById("solD").value, document.getElementById("solM").value, document.getElementById("solA").value);
+        var fechaNac = armarFecha(document.getElementById("nacD").value, document.getElementById("nacM").value, document.getElementById("nacA").value);
+        var obligatorios = ["carrera", "apellidos", "nombres", "dni", "nacionalidad", "calle", "numero", "localidad", "provincia", "celular", "email"];
+        for (var i = 0; i < obligatorios.length; i++) {
+          var el = form.elements[obligatorios[i]];
+          if (!el || !String(el.value || "").trim()) {
+            alert("Completá el campo faltante.");
+            if (el) el.focus();
+            return;
+          }
         }
-      }
-      if (!form.acepta.checked) {
-        alert("Tenés que aceptar la declaración jurada.");
-        return;
-      }
-      var data = {};
-      var fd = new FormData(form);
-      fd.forEach(function (v, k) { if (k !== "foto4x4") data[k] = v; });
-      data.id = siguienteCodigo(data.carrera);
-      data.estado = "Preinscripto";
-      data.carreraNombre = CARRERAS[data.carrera] || data.carrera;
-      data.docsTitulo = form.docsTitulo.checked;
-      data.docsSalud = form.docsSalud.checked;
-      data.docsDni = form.docsDni.checked;
-      data.docsFotos = form.docsFotos.checked;
-      data.docsFolio = form.docsFolio.checked;
-      leerFoto(function (foto) {
-        data.foto = foto;
-        var all = loadAll();
-        all.unshift(data);
-        saveAll(all);
-        ultima = data;
-        document.getElementById("fichaView").innerHTML = fichaHTML(data);
-        document.getElementById("resultadoFicha").classList.remove("hidden");
-        form.classList.add("hidden");
-        document.getElementById("resultadoFicha").scrollIntoView({ behavior: "smooth" });
-      });
-    });
+        if (!fecha) { alert("Completá la fecha de la solicitud: día, mes y año."); return; }
+        if (!fechaNac) { alert("Completá la fecha de nacimiento: primero el día, después el mes y al final el año."); return; }
+        if (!form.acepta.checked) { alert("Tenés que aceptar la declaración jurada."); return; }
 
+        var data = {};
+        var fd = new FormData(form);
+        fd.forEach(function (v, k) { if (k !== "foto4x4") data[k] = v; });
+        data.fecha = fecha;
+        data.fechaNac = fechaNac;
+        data.id = siguienteCodigo(data.carrera);
+        data.estado = "Preinscripto";
+        data.carreraNombre = CARRERAS[data.carrera] || data.carrera;
+        data.docsTitulo = !!(form.docsTitulo && form.docsTitulo.checked);
+        data.docsSalud = !!(form.docsSalud && form.docsSalud.checked);
+        data.docsDni = !!(form.docsDni && form.docsDni.checked);
+        data.docsFotos = !!(form.docsFotos && form.docsFotos.checked);
+        data.docsFolio = !!(form.docsFolio && form.docsFolio.checked);
+
+        leerFoto(function (foto) {
+          data.foto = foto;
+          try {
+            var all = loadAll();
+            all.unshift(data);
+            saveAll(all);
+          } catch (err) {
+            alert("La ficha se generó, pero no se pudo guardar en este equipo.");
+          }
+          document.getElementById("fichaView").innerHTML = fichaHTML(data);
+          document.getElementById("resultadoFicha").classList.remove("hidden");
+          form.classList.add("hidden");
+          document.getElementById("resultadoFicha").scrollIntoView({ behavior: "smooth" });
+        });
+      } catch (err) {
+        alert("No se pudo generar la ficha. Revisá los datos e intentá de nuevo.");
+      }
+    }
+
+    document.getElementById("btnGenerar").addEventListener("click", generar);
+    form.addEventListener("submit", function (e) { e.preventDefault(); generar(); });
     document.getElementById("btnImprimir").onclick = function () { window.print(); };
     document.getElementById("btnNueva").onclick = function () { location.reload(); };
   })();

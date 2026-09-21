@@ -17,7 +17,6 @@
           <a href="inscripciones.html" data-page="inscripciones.html">Inscripciones</a>
           <a href="institucion.html" data-page="institucion.html">Institución</a>
           <a href="contacto.html" data-page="contacto.html">Contacto</a>
-          <a href="preinscriptos.html" data-page="preinscriptos.html">Personal</a>
         </nav>
         <a class="btn btn-orange" href="inscripciones.html">Quiero inscribirme</a>
       </div>
@@ -39,7 +38,6 @@
       </div>
       <p class="foot-note">Más educación para más oportunidades</p>
       <p class="mini">Instituto de gestión privada · ISEP N° 8232 · Enviar fichas a instituto8232@gmail.com</p>
-      <p class="mini"><a href="preinscriptos.html">Área institucional — ver preinscriptos</a></p>
     </footer>`;
 
   document.body.insertAdjacentHTML("afterbegin", header);
