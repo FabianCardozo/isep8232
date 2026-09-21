@@ -22,8 +22,7 @@
         <div class="notice" style="margin-bottom:18px">
           <b>Importante — carácter de declaración jurada</b><br>
           El o la estudiante / aspirante debe rellenar este formulario en carácter de <b>declaración jurada</b>.
-          Al confirmar, sus datos y foto se enviarán de forma privada al instituto para gestionar la preinscripción. Después debe <b>guardar la ficha</b>
-          e <b>imprimir la ficha</b> para presentarla de forma física, junto con la documentación requerida,
+          Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com. Además, debe <b>imprimir la ficha</b> para presentarla de forma física, junto con la documentación requerida,
           en el ISEP N° 8232 en la fecha que se informará oportunamente.
         </div>
         <form class="form-card" id="fichaForm" autocomplete="off" novalidate>
@@ -181,14 +180,14 @@
 
           <label class="check" style="margin:14px 0 18px">
             <input type="checkbox" name="acepta" required>
-            Declaro bajo juramento que los datos consignados son verdaderos. Acepto que mis datos y foto se envíen al ISEP para gestionar mi preinscripción y acepto imprimir la ficha para presentarla en el ISEP N° 8232, con la documentación requerida, en la fecha que se informe oportunamente.
+            Declaro bajo juramento que los datos consignados son verdaderos. Acepto que mis datos y foto se envíen al ISEP para gestionar mi preinscripción y acepto imprimir la ficha para presentarla en el ISEP N° 8232, con la documentación requerida, en la fecha que se informe oportunamente. Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com.
           </label>
 
           <button class="btn btn-orange" type="button" id="btnGenerar">Enviar preinscripción y generar ficha</button>
         </form>
 
         <div id="resultadoFicha" class="hidden" style="margin-top:22px">
-          <div class="ok no-print"><b>Preinscripción recibida por el ISEP.</b> Guardá tu ficha en PDF e imprimila para presentarla junto con la documentación requerida, en la fecha que informe el instituto. Conservá el código de tu solicitud.</div>
+          <div class="ok no-print"><b>Ficha de preinscripción generada.</b> Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com. También debe imprimirla y presentarla junto con la documentación requerida, en la fecha que informe el instituto.</div>
           <div id="fichaView"></div>
           <div class="no-print" style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
             <button class="btn btn-orange" type="button" id="btnImprimir">Descargar ficha en PDF</button>
@@ -300,7 +299,7 @@
         "<h2>Solicitud de preinscripción</h2><div>ISEP N° 8232 · Hipólito Yrigoyen 686 (Escuela Técnica N° 3134)<br>San Ramón de la Nueva Orán · Lunes a viernes 19:15 a 23:30 hs<br>instituto8232@gmail.com</div></div>" +
         "<div class='ficha-izq'><b>" + esc(d.id) + "</b><div>" + esc(d.fecha) + "</div>" + foto + "</div></div>" +
         cuerpo +
-        "<p style='margin-top:16px;font-size:.82rem'>Declaro que los datos consignados son verdaderos. Esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en sede.</p>" +
+        "<p style='margin-top:16px;font-size:.82rem'>Declaro que los datos consignados son verdaderos. Esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en sede. Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com.</p>" +
         "<div class='ficha-firmas'><div class='firma-linea'>Firma del / de la aspirante<br>Aclaración: " + esc(d.nombres) + " " + esc(d.apellidos) + "<br>DNI: " + esc(d.dni) + "</div><div class='firma-linea'>Aclaración y DNI</div></div>" +
         "<div class='ficha-recibido'><strong>RECIBIDO — uso institucional</strong>Fecha de recepción (DD/MM/AAAA): ____ / ____ / ________ &nbsp;&nbsp; Firma y sello del instituto: ______________________________</div>" +
         "</div>";
