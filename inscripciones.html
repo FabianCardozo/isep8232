@@ -22,7 +22,7 @@
         <div class="notice" style="margin-bottom:18px">
           <b>Importante — carácter de declaración jurada</b><br>
           El o la estudiante / aspirante debe rellenar este formulario en carácter de <b>declaración jurada</b>.
-          Después debe <b>enviarlo al correo institucional instituto8232@gmail.com</b>
+          Al confirmar, sus datos y foto se enviarán de forma privada al instituto para gestionar la preinscripción. Después debe <b>guardar la ficha</b>
           e <b>imprimir la ficha</b> para presentarla de forma física, junto con la documentación requerida,
           en el ISEP N° 8232 en la fecha que se informará oportunamente.
         </div>
@@ -64,8 +64,8 @@
           <fieldset>
             <legend>Datos del / de la aspirante</legend>
             <div class="grid-2">
-              <div class="field"><label>Apellidos</label><input type="text" name="apellidos" required autocomplete="off"></div>
-              <div class="field"><label>Nombres</label><input type="text" name="nombres" required autocomplete="off"></div>
+              <div class="field"><label>Apellidos</label><input type="text" name="apellidos" maxlength="150" required autocomplete="off"></div>
+              <div class="field"><label>Nombres</label><input type="text" name="nombres" maxlength="150" required autocomplete="off"></div>
               <div class="field">
                 <label>Foto tipo 4x4</label>
                 <input type="file" id="foto4x4" name="foto4x4" accept="image/*">
@@ -100,7 +100,7 @@
                   <option>Pasaporte</option>
                 </select>
               </div>
-              <div class="field"><label>N° de documento</label><input type="text" name="dni" required placeholder="Ej. 41340730" autocomplete="off"></div>
+              <div class="field"><label>N° de documento</label><input type="text" name="dni" minlength="3" maxlength="30" required placeholder="Ej. 41340730" autocomplete="off"></div>
               <div class="field"><label>CUIL</label><input type="text" name="cuil" placeholder="XX-XXXXXXXX-X" autocomplete="off"></div>
               <div class="field"><label>Nacionalidad</label><input type="text" name="nacionalidad" value="Argentina" required autocomplete="off"></div>
               <div class="field"><label>Lugar de nacimiento</label><input type="text" name="lugarNac" placeholder="Ej. Orán" autocomplete="off"></div>
@@ -164,7 +164,7 @@
               <div class="field"><label>Provincia</label><input type="text" name="provincia" value="Salta" required autocomplete="off"></div>
               <div class="field"><label>Teléfono</label><input type="text" name="telefono" autocomplete="off"></div>
               <div class="field"><label>Celular</label><input type="text" name="celular" required autocomplete="off"></div>
-              <div class="field full"><label>Correo electrónico</label><input type="text" name="email" required autocomplete="off"></div>
+              <div class="field full"><label>Correo electrónico</label><input type="email" name="email" required autocomplete="off"></div>
             </div>
           </fieldset>
 
@@ -181,10 +181,10 @@
 
           <label class="check" style="margin:14px 0 18px">
             <input type="checkbox" name="acepta" required>
-            Declaro bajo juramento que los datos consignados son verdaderos. Acepto enviar esta ficha a instituto8232@gmail.com e imprimirla para presentarla en el ISEP N° 8232, con la documentación requerida, en la fecha que se informe oportunamente.
+            Declaro bajo juramento que los datos consignados son verdaderos. Acepto que mis datos y foto se envíen al ISEP para gestionar mi preinscripción y acepto imprimir la ficha para presentarla en el ISEP N° 8232, con la documentación requerida, en la fecha que se informe oportunamente.
           </label>
 
-          <button class="btn btn-orange" type="button" id="btnGenerar">Generar ficha</button>
+          <button class="btn btn-orange" type="button" id="btnGenerar">Enviar preinscripción y generar ficha</button>
         </form>
 
         <div id="resultadoFicha" class="hidden" style="margin-top:22px">
@@ -202,6 +202,9 @@
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/isep-cloud.js"></script>
   <script src="assets/js/site.js"></script>
   <script>
   (function () {
@@ -239,7 +242,7 @@
       m = String(m || "").replace(/\D/g, "");
       a = String(a || "").replace(/\D/g, "");
       if (!d || !m || !a) return "";
-      return pad(d) + "/" + pad(m) + "/" + a;
+      var date=new Date(+a,+m-1,+d); if(a.length!==4||+a<1900||date.getFullYear()!==+a||date.getMonth()!==+m-1||date.getDate()!==+d||date>new Date())return '';return pad(d)+'/'+pad(m)+'/'+a;
     }
     function esc(v) {
       return String(v == null || v === "" ? "—" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -248,21 +251,11 @@
       try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
     }
     function saveAll(rows) { localStorage.setItem(KEY, JSON.stringify(rows)); }
-    function siguienteCodigo(carrera) {
-      var prefijo = PREFIJOS[carrera] || "ISEP-GEN27";
-      var max = 0;
-      loadAll().forEach(function (r) {
-        if (r.id && String(r.id).indexOf(prefijo + "-") === 0) {
-          var n = parseInt(String(r.id).split("-").pop(), 10);
-          if (n > max) max = n;
-        }
-      });
-      return prefijo + "-" + pad(max + 1, 3);
-    }
+    function siguienteCodigo(carrera) { return (PREFIJOS[carrera]||'ISEP27')+'-'+submissionId; }
     function soloNum(el, max) {
       el.addEventListener("input", function () {
         el.value = String(el.value || "").replace(/\D/g, "").slice(0, max);
-        if (el.value.length >= max) {
+        if (el.value.length >= max && !/A$/.test(el.id)) {
           var next = el.parentNode.querySelector("input#" + (
             el.id === "solD" ? "solM" : el.id === "solM" ? "solA" :
             el.id === "nacD" ? "nacM" : el.id === "nacM" ? "nacA" : ""
@@ -355,7 +348,24 @@
       document.getElementById("bloqueSecundario").classList.toggle("hidden", lic);
     });
 
+    var submissionId=crypto.randomUUID(), pendingData=null, sending=false;
+    var pref=new URLSearchParams(location.search).get('carrera');if(CARRERAS[pref])sel.value=pref;
+    function studies(){var lic=sel.value==='licenciatura';document.getElementById('bloqueLicenciatura').disabled=!lic;document.getElementById('bloqueSecundario').disabled=lic;}
+    sel.addEventListener('change',studies);sel.dispatchEvent(new Event('change'));studies();
+    var status=document.createElement('p');status.setAttribute('role','status');status.style.marginTop='14px';form.appendChild(status);
+    async function sendPending(){
+      sending=true;var btn=document.getElementById('btnGenerar');btn.disabled=true;status.textContent='Enviando al instituto…';
+      try {await window.isepSend(submissionId,pendingData);window.ISEP_ULTIMA=pendingData;document.getElementById('fichaView').innerHTML=fichaHTML(pendingData);document.getElementById('resultadoFicha').classList.remove('hidden');form.classList.add('hidden');document.getElementById('resultadoFicha').scrollIntoView({behavior:'smooth'});}
+      catch(e){status.textContent=e.message+' El reintento enviará la misma ficha para evitar duplicados.';}
+      finally{sending=false;btn.disabled=false;}
+    }
     function generar() {
+      if(sending)return;
+      if(pendingData){sendPending();return;}
+      form.querySelectorAll('input[type="text"],input[type="email"]').forEach(el=>el.value=el.value.trim());
+      form.querySelectorAll('input[type=text],input[type=email]').forEach(el=>{if(!el.maxLength||el.maxLength<0)el.maxLength=500;});
+      if(!form.reportValidity())return;
+      var photo=document.getElementById('foto4x4').files[0];if(photo&&(!/^image\/(jpeg|png|webp)$/.test(photo.type)||photo.size>5*1024*1024)){alert('Elegí una foto JPG, PNG o WebP de hasta 5 MB.');return;}
       try {
         var fecha = armarFecha(document.getElementById("solD").value, document.getElementById("solM").value, document.getElementById("solA").value);
         var fechaNac = armarFecha(document.getElementById("nacD").value, document.getElementById("nacM").value, document.getElementById("nacA").value);
@@ -368,8 +378,8 @@
             return;
           }
         }
-        if (!fecha) { alert("Completá la fecha de la solicitud: día, mes y año."); return; }
-        if (!fechaNac) { alert("Completá la fecha de nacimiento: primero el día, después el mes y al final el año."); return; }
+        if (!fecha) { alert("Ingresá una fecha de solicitud válida, no futura."); return; }
+        if (!fechaNac) { alert("Ingresá una fecha de nacimiento válida, no futura."); return; }
         if (!form.acepta.checked) { alert("Tenés que aceptar la declaración jurada."); return; }
 
         var data = {};
@@ -386,21 +396,8 @@
         data.docsFotos = !!(form.docsFotos && form.docsFotos.checked);
         data.docsFolio = !!(form.docsFolio && form.docsFolio.checked);
 
-        leerFoto(function (foto) {
-          data.foto = foto;
-          try {
-            var all = loadAll();
-            all.unshift(data);
-            saveAll(all);
-          } catch (err) {
-            alert("La ficha se generó, pero no se pudo guardar en este equipo.");
-          }
-          window.ISEP_ULTIMA = data;
-          document.getElementById("fichaView").innerHTML = fichaHTML(data);
-          document.getElementById("resultadoFicha").classList.remove("hidden");
-          form.classList.add("hidden");
-          document.getElementById("resultadoFicha").scrollIntoView({ behavior: "smooth" });
-        });
+        sending=true;document.getElementById('btnGenerar').disabled=true;
+        leerFoto(function(foto){data.foto=foto;pendingData=data;form.querySelectorAll('input,select,textarea').forEach(el=>el.disabled=true);sendPending();});
       } catch (err) {
         alert("No se pudo generar la ficha. Revisá los datos e intentá de nuevo.");
       }
