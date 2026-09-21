@@ -145,7 +145,7 @@ function fichaHTML(row) {
     "<div style='text-align:right;font-size:.85rem'><b>" + esc(row.id) + "</b><div>" + esc(formatDate(row.fecha)) + "</div></div>" +
     "</div>" +
     cuerpo +
-    "<p style='margin-top:16px;font-size:.82rem'>Declaro que los datos consignados son verdaderos. Esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en sede.</p>" +
+    "<p style='margin-top:16px;font-size:.82rem'>Declaro que los datos consignados son verdaderos. Esta solicitud tiene carácter de preinscripción hasta la presentación de la documentación en sede. Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com.</p>" +
     "<div class='ficha-firmas'>" +
     "<div class='firma-linea'>Firma del / de la aspirante<br>Aclaración: " + esc(row.nombres) + " " + esc(row.apellidos) + "<br>DNI: " + esc(row.dni) + "</div>" +
     "<div class='firma-linea'>Aclaración y DNI</div>" +
@@ -162,7 +162,7 @@ function fichaDescargable(row) {
   return "<!DOCTYPE html><html lang='es-AR'><head><meta charset='UTF-8'><title>Ficha " + esc(row.id) + "</title>" +
     "<style>body{font-family:Arial,sans-serif;color:#222;padding:24px} .ficha{max-width:800px;margin:auto} .ficha-top{display:flex;justify-content:space-between;gap:16px;border-bottom:2px solid #1f3b36;padding-bottom:10px} .ficha-row{display:grid;grid-template-columns:220px 1fr;border-bottom:1px dotted #999;padding:6px 0;font-size:14px} .ficha-firmas{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:40px} .firma-linea{border-top:1px solid #333;padding-top:8px;min-height:86px;font-size:13px} .ficha-recibido{margin-top:28px;border:1px dashed #333;padding:12px;font-size:14px}</style></head><body>" +
     fichaHTML(row).replace("src='assets/logo_isep.jpg'", "src='https://fabiancardozo.github.io/isep8232/assets/logo_isep.jpg'") +
-    "<p style='margin-top:18px;font-size:13px'>Enviar esta ficha a instituto8232@gmail.com e imprimirla para presentarla en sede.</p>" +
+    "<p style='margin-top:18px;font-size:13px'>Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com. También debe imprimirla para presentarla en sede.</p>" +
     "</body></html>";
 }
 
@@ -232,8 +232,8 @@ function bindForm() {
     all.unshift(data);
     saveAll(all);
     descargarArchivo("ficha-preinscripcion-" + data.dni + ".html", fichaDescargable(data), "text/html;charset=utf-8");
-    mostrarLeyenda("leyendaPreinscripcion", "Ficha generada. Descargala, enviala a " + EMAIL_DESTINO + " e imprimila para presentarla en sede.");
-    mostrarCartel("Ficha generada", "El archivo se descargó. Envíalo a " + EMAIL_DESTINO + " e imprimilo para la inscripción.");
+    mostrarLeyenda("leyendaPreinscripcion", "Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com. También debe imprimirla para presentarla en sede.");
+    mostrarCartel("Ficha generada", "Luego de confirmar y descargar su ficha de preinscripción es necesario que la envié desde su correo personal al correo institucional: instituto8232@gmail.com. También debe imprimirla para la inscripción.");
     setTimeout(function () {
       location.href = "ficha.html?id=" + encodeURIComponent(data.id);
     }, 900);
