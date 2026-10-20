@@ -6,7 +6,7 @@
   <title>Preinscripción | ISEP N° 8232</title>
   <link rel="icon" href="assets/logo_isep.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=a4-20261020">
 </head>
 <body>
   <main>
@@ -292,7 +292,7 @@
         return "<div class='ficha-row'><span>" + esc(f[0]) + "</span><b>" + esc(f[1]) + "</b></div>";
       }).join("");
       var foto = d.foto ? "<img class='foto-4x4' src='" + d.foto + "' alt='Foto 4x4'>" : "<div class='foto-4x4'></div>";
-      return "<div class='ficha' id='printable'>" +
+      return "<div class='ficha ficha-a4' id='printable'>" +
         "<div class='ficha-top'>" +
         "<img src='assets/logo_isep.jpg' alt='ISEP' width='72' height='72'>" +
         "<div style='flex:1;text-align:center'><div style='font-size:.75rem;letter-spacing:.12em'>INSTITUTO SUPERIOR DE EDUCACIÓN PROFESIONAL</div>" +
@@ -398,26 +398,43 @@
 
     document.getElementById("btnGenerar").addEventListener("click", generar);
     form.addEventListener("submit", function (e) { e.preventDefault(); generar(); });
-    document.getElementById("btnImprimir").onclick = function () {
+    document.getElementById("btnImprimir").onclick = async function () {
       var el = document.getElementById("printable");
       if (!el) return alert("Primero generá la ficha.");
-      if (!window.html2canvas || !window.jspdf) {
-        window.print();
-        return;
-      }
-      window.html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(function (canvas) {
-        var img = canvas.toDataURL("image/jpeg", 0.92);
+      if (!window.html2canvas || !window.jspdf) { window.print(); return; }
+      var button = this;
+      button.disabled = true;
+      try {
+        if (document.fonts) await document.fonts.ready;
+        var canvas = await window.html2canvas(el, {
+          scale: 2, useCORS: true, backgroundColor: "#ffffff",
+          windowWidth: 1024, scrollX: 0, scrollY: 0,
+          onclone: function (doc) {
+            var sheet = doc.getElementById("printable");
+            // Remove the mobile-sized ancestors from the capture layout.
+            doc.body.appendChild(sheet);
+            sheet.style.position = "absolute";
+            sheet.style.left = "0";
+            sheet.style.top = "0";
+          }
+        });
         var pdf = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-        var w = 210;
-        var h = canvas.height * w / canvas.width;
-        if (h > 297) {
-          w = 210 * 297 / h;
-          h = 297;
+        var width = 186, pageHeight = 273;
+        var pixelsPerMM = canvas.width / width;
+        var pagePixels = Math.floor(pageHeight * pixelsPerMM);
+        // Keep the same readable width on every page; never shrink a tall phone capture.
+        for (var y = 0; y < canvas.height; y += pagePixels) {
+          if (y) pdf.addPage();
+          var part = document.createElement("canvas");
+          part.width = canvas.width;
+          part.height = Math.min(pagePixels, canvas.height - y);
+          part.getContext("2d").drawImage(canvas, 0, y, canvas.width, part.height, 0, 0, part.width, part.height);
+          pdf.addImage(part.toDataURL("image/jpeg", 0.95), "JPEG", 12, 12, width, part.height / pixelsPerMM);
         }
-        pdf.addImage(img, "JPEG", (210 - w) / 2, 8, w, Math.min(h, 281));
         var nombre = (window.ISEP_ULTIMA && window.ISEP_ULTIMA.id) ? window.ISEP_ULTIMA.id : "ficha-isep";
         pdf.save(nombre + ".pdf");
-      }).catch(function () { window.print(); });
+      } catch (err) { window.print(); }
+      finally { button.disabled = false; }
     };
     document.getElementById("btnNueva").onclick = function () { location.reload(); };
   })();
