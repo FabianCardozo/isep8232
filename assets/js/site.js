@@ -2,6 +2,7 @@
   const path = location.pathname.split("/").pop() || "index.html";
   const header = `
     <header class="topbar">
+      <div style="background:#6b2a56;color:#fff;text-align:center;padding:8px 16px;font-size:16px;font-weight:700;letter-spacing:.08em;line-height:1.3">INSTITUTO SUPERIOR DE EDUCACIÓN PROFESIONAL N° 8232 · SEDE ORÁN</div>
       <div class="wrap nav">
         <a class="brand" href="index.html">
           <img src="assets/logo_isep.jpg" alt="Logo ISEP N° 8232">
