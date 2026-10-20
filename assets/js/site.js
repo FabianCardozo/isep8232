@@ -6,7 +6,7 @@
         <a class="brand" href="index.html">
           <img src="assets/logo_isep.jpg" alt="Logo ISEP N° 8232">
           <div class="brand-text">
-            <strong>ISEP N° 8232</strong>
+            <strong>ISEP N° 8232 · Sede Orán</strong>
             <span>Instituto Superior de<br>Educación Profesional</span>
           </div>
         </a>
@@ -28,7 +28,7 @@
         <div class="footer-brand">
           <img src="assets/logo_isep.jpg" alt="ISEP">
           <div>
-            <strong>ISEP N° 8232</strong>
+            <strong>ISEP N° 8232 · Sede Orán</strong>
             <span>Instituto Superior de Educación Profesional</span>
           </div>
         </div>
