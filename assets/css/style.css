@@ -419,3 +419,17 @@ table.data th { background: var(--plum); color: #fff; }
 }
 
 @media screen and (max-width:980px) { .ficha.ficha-a4 { width:100%!important; } }
+
+/* Compact one-sheet A4 registration form. */
+.ficha.ficha-a4 { padding:4mm!important; line-height:1.15; }
+.ficha-a4 .ficha-row { font-size:9pt; padding:.65mm 0; }
+.ficha-a4 .ficha-top>div[style] { font-size:8pt; }
+.ficha-a4 .ficha-top { padding-bottom:2mm; }
+.ficha-a4 .ficha-firmas { margin-top:7mm; }
+.ficha-a4 .firma-linea { min-height:12mm; padding-top:2mm; font-size:8pt; }
+.ficha-a4 .ficha-recibido { margin-top:3mm; padding:2mm; font-size:8pt; }
+.ficha-a4 .ficha-recibido strong { margin-bottom:2mm; }
+@page { size:210mm 297mm; margin:12mm; }
+@media print {
+  .ficha.ficha-a4 { break-inside:avoid; page-break-inside:avoid; }
+}
