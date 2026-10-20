@@ -6,7 +6,7 @@
   <title>Preinscripción | ISEP N° 8232</title>
   <link rel="icon" href="assets/logo_isep.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=a4-20261020">
+  <link rel="stylesheet" href="assets/css/style.css?v=a4-onepage-20261020">
 </head>
 <body>
   <main>
@@ -401,7 +401,7 @@
     document.getElementById("btnImprimir").onclick = async function () {
       var el = document.getElementById("printable");
       if (!el) return alert("Primero generá la ficha.");
-      if (!window.html2canvas || !window.jspdf) { window.print(); return; }
+      if (!window.html2canvas || !window.jspdf) { alert("No se pudo cargar el generador de PDF. Revisá tu conexión y recargá la página para descargar la ficha A4."); return; }
       var button = this;
       button.disabled = true;
       try {
@@ -419,21 +419,17 @@
           }
         });
         var pdf = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-        var width = 186, pageHeight = 273;
-        var pixelsPerMM = canvas.width / width;
-        var pagePixels = Math.floor(pageHeight * pixelsPerMM);
-        // Keep the same readable width on every page; never shrink a tall phone capture.
-        for (var y = 0; y < canvas.height; y += pagePixels) {
-          if (y) pdf.addPage();
-          var part = document.createElement("canvas");
-          part.width = canvas.width;
-          part.height = Math.min(pagePixels, canvas.height - y);
-          part.getContext("2d").drawImage(canvas, 0, y, canvas.width, part.height, 0, 0, part.width, part.height);
-          pdf.addImage(part.toDataURL("image/jpeg", 0.95), "JPEG", 12, 12, width, part.height / pixelsPerMM);
+        // A PDF always contains exactly one ISO A4 portrait page.
+        var width = 186;
+        var height = canvas.height * width / canvas.width;
+        if (height > 273) {
+          width *= 273 / height;
+          height = 273;
         }
+        pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", (210 - width) / 2, 12, width, height);
         var nombre = (window.ISEP_ULTIMA && window.ISEP_ULTIMA.id) ? window.ISEP_ULTIMA.id : "ficha-isep";
         pdf.save(nombre + ".pdf");
-      } catch (err) { window.print(); }
+      } catch (err) { alert("No se pudo descargar la ficha A4. Intentá nuevamente; no hace falta enviar otra preinscripción."); }
       finally { button.disabled = false; }
     };
     document.getElementById("btnNueva").onclick = function () { location.reload(); };
