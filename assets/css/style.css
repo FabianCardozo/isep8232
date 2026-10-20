@@ -396,3 +396,26 @@ table.data th { background: var(--plum); color: #fff; }
 /* Cloud forms: mobile overflow and keyboard focus */
 .field,fieldset{min-width:0}input,select,textarea{max-width:100%}:focus-visible{outline:3px solid #14685c;outline-offset:3px}.ficha-izq b,.data td{overflow-wrap:anywhere}.ficha-izq b{font-size:.64rem}
 @media(max-width:980px){.nav>.btn{display:none}.brand{min-width:0}.grid-3>.field{grid-column:1 / -1!important}}
+/* Paper layout shared by print and PDF capture, independent of phone width. */
+.ficha.ficha-a4 {
+  box-sizing:border-box; width:186mm!important; max-width:none!important;
+  margin:0!important; padding:5mm!important; border-radius:0!important;
+  background:#fff; font-family:Arial,sans-serif; font-size:10pt; line-height:1.3;
+}
+.ficha-a4 .ficha-top { gap:3mm; }
+.ficha-a4 .ficha-top>img { width:18mm; height:18mm; flex-shrink:0; }
+.ficha-a4 .ficha-top>div[style] { min-width:0; font-size:9pt; }
+.ficha-a4 .ficha-izq { width:32mm; }
+.ficha-a4 .ficha-row { grid-template-columns:52mm minmax(0,1fr); font-size:10pt; padding:1mm 0; gap:2mm; break-inside:avoid; }
+.ficha-a4 .ficha-row>* { min-width:0; overflow-wrap:anywhere; }
+.ficha-a4 .ficha-firmas { margin-top:9mm; gap:8mm; }
+.ficha-a4 .firma-linea { min-height:17mm; font-size:9pt; }
+.ficha-a4 .ficha-recibido { margin-top:5mm; padding:3mm; font-size:9pt; }
+@media print {
+  html,body { width:auto!important; margin:0!important; padding:0!important; }
+  #fichaView { width:186mm!important; max-width:none!important; margin:0!important; }
+  .ficha { break-inside:auto; page-break-inside:auto; }
+  .ficha-top,.ficha-firmas,.ficha-recibido { break-inside:avoid; }
+}
+
+@media screen and (max-width:980px) { .ficha.ficha-a4 { width:100%!important; } }
