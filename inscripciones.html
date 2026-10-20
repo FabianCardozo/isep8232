@@ -66,9 +66,9 @@
               <div class="field"><label>Apellidos</label><input type="text" name="apellidos" maxlength="150" required autocomplete="off"></div>
               <div class="field"><label>Nombres</label><input type="text" name="nombres" maxlength="150" required autocomplete="off"></div>
               <div class="field">
-                <label for="foto4x4">Foto tipo 4x4 — obligatoria</label>
-                <input type="file" id="foto4x4" name="foto4x4" accept="image/jpeg,image/png,image/webp" required aria-describedby="fotoAyuda">
-                <small id="fotoAyuda">Adjuntá una foto del aspirante en JPG, PNG o WebP, de hasta 20 MB. La aplicación la reduce automáticamente antes de enviarla. La foto es obligatoria.</small>
+                <label for="foto4x4">Foto tipo 4x4 — opcional</label>
+                <input type="file" id="foto4x4" name="foto4x4" accept="image/jpeg,image/png,image/webp" aria-describedby="fotoAyuda">
+                <small id="fotoAyuda">Adjuntá una foto del aspirante en JPG, PNG o WebP, de hasta 20 MB. La aplicación la reduce automáticamente antes de enviarla. Podés enviar la preinscripción sin foto.</small>
               </div>
               <div class="field"><label>Edad</label><input name="edad" type="text" inputmode="numeric" autocomplete="off"></div>
               <div class="field">
@@ -376,7 +376,7 @@
     var status=document.createElement('p');status.setAttribute('role','status');status.style.marginTop='14px';form.appendChild(status);
     async function sendPending(){
       if(submitted)return;
-      if(!pendingData || !pendingData.foto){status.textContent='Es obligatorio adjuntar la foto del aspirante antes de enviar.';return;}
+      if(!pendingData)return;
       sending=true;var btn=document.getElementById('btnGenerar');btn.disabled=true;status.textContent='Enviando al instituto…';
       try {await window.isepSend(submissionId,pendingData);submitted=true;window.ISEP_ULTIMA=pendingData;document.getElementById('fichaView').innerHTML=fichaHTML(pendingData);document.getElementById('resultadoFicha').classList.remove('hidden');form.classList.add('hidden');var result=document.getElementById('resultadoFicha');var notice=result.querySelector('.ok');notice.setAttribute('role','status');notice.innerHTML='<b>¡Tu ficha de preinscripción se envió de forma exitosa al ISEP N° 8232!</b><br>Código: '+esc(pendingData.id)+'<br>No es necesario volver a enviarla. Ahora descargá el PDF y seguí las indicaciones para su presentación.';result.scrollIntoView({behavior:'smooth'});alert('¡Tu ficha de preinscripción se envió de forma exitosa!\n\nNo es necesario volver a enviarla. Ahora descargá tu ficha en PDF.');}
       catch(e){status.textContent=e.message+' El reintento enviará la misma ficha para evitar duplicados.';}
@@ -388,7 +388,7 @@
       form.querySelectorAll('input[type="text"],input[type="email"]').forEach(el=>el.value=el.value.trim());
       form.querySelectorAll('input[type=text],input[type=email]').forEach(el=>{if(!el.maxLength||el.maxLength<0)el.maxLength=500;});
       if(!form.reportValidity())return;
-      var photo=document.getElementById('foto4x4').files[0];if(!photo){alert('Adjuntá la foto del aspirante para enviar la preinscripción.');document.getElementById('foto4x4').focus();return;}if(photo&&(!tipoFotoValido(photo)||photo.size>20*1024*1024)){alert('Elegí una foto JPG, PNG o WebP de hasta 20 MB. La aplicación la reducirá automáticamente.');return;}
+      var photo=document.getElementById('foto4x4').files[0];if(photo&&(!tipoFotoValido(photo)||photo.size>20*1024*1024)){alert('Elegí una foto JPG, PNG o WebP de hasta 20 MB. La aplicación la reducirá automáticamente.');return;}
       try {
         var fecha = armarFecha(document.getElementById("solD").value, document.getElementById("solM").value, document.getElementById("solA").value);
         var fechaNac = armarFecha(document.getElementById("nacD").value, document.getElementById("nacM").value, document.getElementById("nacA").value);
@@ -419,8 +419,8 @@
         data.docsFotos = !!(form.docsFotos && form.docsFotos.checked);
         data.docsFolio = !!(form.docsFolio && form.docsFolio.checked);
 
-        sending=true;document.getElementById('btnGenerar').disabled=true;status.textContent='Preparando y reduciendo la foto…';
-        leerFoto(function(foto,errorFoto){if(!foto){sending=false;document.getElementById('btnGenerar').disabled=false;status.textContent=errorFoto || 'No se pudo leer la foto. Elegí una imagen válida del aspirante antes de enviar.';document.getElementById('foto4x4').focus();return;}data.foto=foto;pendingData=data;form.querySelectorAll('input,select,textarea').forEach(el=>el.disabled=true);sendPending();});
+        sending=true;document.getElementById('btnGenerar').disabled=true;status.textContent=photo?'Preparando y reduciendo la foto…':'Enviando al instituto…';
+        leerFoto(function(foto,errorFoto){if(photo && !foto){sending=false;document.getElementById('btnGenerar').disabled=false;status.textContent=errorFoto || 'No se pudo leer la foto. Elegí una imagen válida del aspirante antes de enviar.';document.getElementById('foto4x4').focus();return;}data.foto=foto;pendingData=data;form.querySelectorAll('input,select,textarea').forEach(el=>el.disabled=true);sendPending();});
       } catch (err) {
         sending=false;document.getElementById("btnGenerar").disabled=false;
         alert("No se pudo generar la ficha. Revisá los datos e intentá de nuevo.");
