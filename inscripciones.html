@@ -305,26 +305,53 @@
         "<div class='ficha-recibido'><strong>RECIBIDO — uso institucional</strong>Fecha de recepción (DD/MM/AAAA): ____ / ____ / ________ &nbsp;&nbsp; Firma y sello del instituto: ______________________________</div>" +
         "</div>";
     }
+    function tipoFotoValido(file) {
+      return !!file && (/^image\/(jpeg|png|webp)$/i.test(file.type || "") ||
+        (!file.type && /\.(jpe?g|png|webp)$/i.test(file.name || "")));
+    }
     function leerFoto(cb) {
       var input = document.getElementById("foto4x4");
-      if (!input || !input.files || !input.files[0]) { cb(""); return; }
-      var url = URL.createObjectURL(input.files[0]);
-      var img = new Image();
+      var file = input && input.files && input.files[0];
+      if (!file) { cb("", "Adjuntá la foto del aspirante."); return; }
+      var img = new Image(), reader = new FileReader(), done = false;
+      var timer = setTimeout(function () {
+        finish("", "La foto tardó demasiado en procesarse. Elegí otra imagen JPG, PNG o WebP.");
+      }, 30000);
+      function finish(value, error) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        // Run the callback outside image-processing error handlers.
+        cb(value, error || "");
+      }
       img.onload = function () {
+        var result;
         try {
+          if (!img.naturalWidth || !img.naturalHeight) throw new Error("Imagen vacía");
           var c = document.createElement("canvas");
           c.width = 300; c.height = 300;
           var ctx = c.getContext("2d");
-          var s = Math.min(img.width, img.height);
-          var sx = (img.width - s) / 2;
-          var sy = (img.height - s) / 2;
-          ctx.drawImage(img, sx, sy, s, s, 0, 0, 300, 300);
-          cb(c.toDataURL("image/jpeg", 0.72));
-        } catch (err) { cb(""); }
-        URL.revokeObjectURL(url);
+          if (!ctx) throw new Error("Canvas no disponible");
+          ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, 300, 300);
+          var side = Math.min(img.naturalWidth, img.naturalHeight);
+          ctx.drawImage(img, (img.naturalWidth-side)/2, (img.naturalHeight-side)/2,
+            side, side, 0, 0, 300, 300);
+          result = c.toDataURL("image/jpeg", 0.72);
+          if (!/^data:image\/jpeg;base64,/.test(result)) throw new Error("Conversión fallida");
+        } catch (error) {
+          finish("", "No se pudo reducir la foto. Probá con otra imagen JPG, PNG o WebP.");
+          return;
+        }
+        finish(result);
       };
-      img.onerror = function () { URL.revokeObjectURL(url); cb(""); };
-      img.src = url;
+      img.onerror = function () {
+        finish("", "El archivo no se puede abrir como imagen. Usá JPG, PNG o WebP; convertí las fotos HEIC antes de adjuntarlas.");
+      };
+      reader.onerror = function () { finish("", "No se pudo leer el archivo. Volvé a seleccionar la foto desde la galería del celular."); };
+      reader.onabort = function () { finish("", "La lectura de la foto se interrumpió. Seleccionala nuevamente."); };
+      reader.onload = function () { if (!done) img.src = reader.result; };
+      try { reader.readAsDataURL(file); }
+      catch (error) { finish("", "No se pudo acceder a la foto. Volvé a seleccionarla desde tu galería."); }
     }
 
     var form = document.getElementById("fichaForm");
@@ -361,7 +388,7 @@
       form.querySelectorAll('input[type="text"],input[type="email"]').forEach(el=>el.value=el.value.trim());
       form.querySelectorAll('input[type=text],input[type=email]').forEach(el=>{if(!el.maxLength||el.maxLength<0)el.maxLength=500;});
       if(!form.reportValidity())return;
-      var photo=document.getElementById('foto4x4').files[0];if(!photo){alert('Adjuntá la foto del aspirante para enviar la preinscripción.');document.getElementById('foto4x4').focus();return;}if(photo&&(!/^image\/(jpeg|png|webp)$/.test(photo.type)||photo.size>20*1024*1024)){alert('Elegí una foto JPG, PNG o WebP de hasta 20 MB. La aplicación la reducirá automáticamente.');return;}
+      var photo=document.getElementById('foto4x4').files[0];if(!photo){alert('Adjuntá la foto del aspirante para enviar la preinscripción.');document.getElementById('foto4x4').focus();return;}if(photo&&(!tipoFotoValido(photo)||photo.size>20*1024*1024)){alert('Elegí una foto JPG, PNG o WebP de hasta 20 MB. La aplicación la reducirá automáticamente.');return;}
       try {
         var fecha = armarFecha(document.getElementById("solD").value, document.getElementById("solM").value, document.getElementById("solA").value);
         var fechaNac = armarFecha(document.getElementById("nacD").value, document.getElementById("nacM").value, document.getElementById("nacA").value);
@@ -393,8 +420,9 @@
         data.docsFolio = !!(form.docsFolio && form.docsFolio.checked);
 
         sending=true;document.getElementById('btnGenerar').disabled=true;status.textContent='Preparando y reduciendo la foto…';
-        leerFoto(function(foto){if(!foto){sending=false;document.getElementById('btnGenerar').disabled=false;status.textContent='No se pudo leer la foto. Elegí una imagen válida del aspirante antes de enviar.';document.getElementById('foto4x4').focus();return;}data.foto=foto;pendingData=data;form.querySelectorAll('input,select,textarea').forEach(el=>el.disabled=true);sendPending();});
+        leerFoto(function(foto,errorFoto){if(!foto){sending=false;document.getElementById('btnGenerar').disabled=false;status.textContent=errorFoto || 'No se pudo leer la foto. Elegí una imagen válida del aspirante antes de enviar.';document.getElementById('foto4x4').focus();return;}data.foto=foto;pendingData=data;form.querySelectorAll('input,select,textarea').forEach(el=>el.disabled=true);sendPending();});
       } catch (err) {
+        sending=false;document.getElementById("btnGenerar").disabled=false;
         alert("No se pudo generar la ficha. Revisá los datos e intentá de nuevo.");
       }
     }
